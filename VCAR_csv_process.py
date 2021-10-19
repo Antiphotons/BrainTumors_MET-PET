@@ -55,7 +55,7 @@ def voi_separation(patient_number, voi_df):
 # VOI info load in dataframe
 path_to_vois_folder = 'C:/Kotomin/Globalall/Methionine_dyn/02_TAC/VOI_TACs/'
 
-for i in range(2):
+for i in range(3):
     file_num = i + 1
     patient_num = "{0:0=3d}".format(file_num)
     voi_df_unsort = voi_loader(path_to_vois_folder, file_num)

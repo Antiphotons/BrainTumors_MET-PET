@@ -26,11 +26,10 @@ def voi_separation(patient_number, voi_df):
 
     # Particular VOI dataframes generation
     for j in range(len(voi_list)):
-        print(j)
         voi_df_nw = voi_choose(voi_df, voi_list[j])
 
         # generating a new data frame with limited VOI info
-        voi_supp_info = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Patient Name', 'Volume', 'ROI']].reset_index()
+        voi_supp_info = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Patient Name', 'Volume', 'ROI', 'Unit']].reset_index()
         del voi_supp_info['index']
 
         voi_max = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Value']].reset_index()
@@ -43,6 +42,7 @@ def voi_separation(patient_number, voi_df):
         voi_df_nw = pd.DataFrame({
             'Series': voi_supp_info.Volume,
             'VOI': voi_supp_info.ROI,
+            'Units': voi_supp_info.Unit,
             'Maximum': voi_max.Value,
             'Mean': voi_mean.Value,
             'Peak': voi_peak.Value

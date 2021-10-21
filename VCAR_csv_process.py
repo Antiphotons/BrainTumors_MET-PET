@@ -5,7 +5,7 @@ import pandas as pd
 def voi_loader(folder_path, file_number):
     path = folder_path
     file = "{0:0=3d}".format(file_number) + ".csv"
-    voi_dataframe = pd.read_csv(path + file, sep=' ')
+    voi_dataframe = pd.read_csv(path + file, sep=',')
     return voi_dataframe
 
 
@@ -26,6 +26,7 @@ def voi_separation(patient_number, voi_df):
 
     # Particular VOI dataframes generation
     for j in range(len(voi_list)):
+        print(j)
         voi_df_nw = voi_choose(voi_df, voi_list[j])
 
         # generating a new data frame with limited VOI info
@@ -49,7 +50,7 @@ def voi_separation(patient_number, voi_df):
 
         voi_name = patient_number + '_' + voi_list[j] + '.csv'
         print(voi_name)
-        return voi_df_nw.to_csv(voi_name, sep='\t')
+        voi_df_nw.to_csv(voi_name, sep='\t')
 
 
 # VOI info load in dataframe

@@ -2,6 +2,11 @@ import pandas as pd
 import math as m
 
 
+# function for convert kBq/ml to g/ml SUVbw
+def suv_converter(activity, weight, value):
+    return value * weight / activity
+
+
 # function for transform VOI file to curve dataframe
 def curve_loader(folder_path, file_name, measure_type):
     path = folder_path
@@ -20,4 +25,4 @@ def curve_loader(folder_path, file_name, measure_type):
                            1110, 1140, 1170, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040, 2160, 2280])
     else:
         print('error: check dynamic curve length')
-    curve_dataframe = voi_dataframe['']
+    curve_dataframe = voi_dataframe[measure_type]

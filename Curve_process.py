@@ -2,11 +2,6 @@ import pandas as pd
 import math as m
 
 
-# function for convert kBq/ml to g/ml SUVbw
-def suv_converter(activity, weight, value):
-    return value * weight / activity
-
-
 # function for transform VOI file to curve dataframe
 def curve_loader(folder_path, file_name, measure_type):
     path = folder_path

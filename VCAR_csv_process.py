@@ -15,6 +15,17 @@ def voi_choose(dataframe, voi):
     return df
 
 
+# function to convert kBq/ml to g/ml SUVbw
+def suv_converter(path, patient, values):
+    # Load table with patient weights & activities
+    injection = pd.read_csv(path + 'for_SUV.csv', sep=' ',
+                            dtype={'lesion_number': str, 'weight': int, 'activity': float})
+    lesion_string = injection[injection.lesion_number == patient].reset_index()
+    weight = lesion_string.weight[0]
+    activity = lesion_string.activity[0] * 37
+    return values * weight / activity
+
+
 # function for sorting VOI info into separate csv files
 def voi_separation(patient_number, voi_df):
     # delete CT information and last strings
@@ -39,10 +50,19 @@ def voi_separation(patient_number, voi_df):
         voi_peak = voi_df_nw[voi_df_nw.Stat == 'Пик'][['Value']].reset_index()
         del voi_peak['index']
 
+        # check for measure units and conversation if units are not SUV
+        if voi_df_nw.Unit[0] == 'kBq/ml':
+            voi_max = suv_converter(path_to_vois_folder, patient_number, voi_max)
+            voi_mean = suv_converter(path_to_vois_folder, patient_number, voi_mean)
+            voi_peak = suv_converter(path_to_vois_folder, patient_number, voi_peak)
+        elif voi_df_nw.Unit[0] != 'g/ml':
+            print('error in unit type in lesion number' + patient_number)  # here lesion num = patient num
+
+        # VOI dataframe assembly
         voi_df_nw = pd.DataFrame({
             'Series': voi_supp_info.Volume,
             'VOI': voi_supp_info.ROI,
-            'Units': voi_supp_info.Unit,
+            # 'Units': voi_supp_info.Unit
             'Maximum': voi_max.Value,
             'Mean': voi_mean.Value,
             'Peak': voi_peak.Value

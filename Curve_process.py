@@ -32,6 +32,7 @@ def curve_loader(folder_path, file_name, measure_type):
 # function for plotting time-activity curve
 def tac_plot(tac_df, measure_type):
     time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df[measure_type])
+    plt.figure(figsize=(12, 4))
     plt.plot(time, activity)
     plt.xlabel('Time (sec)')
     plt.ylabel('SUVbw (' + measure_type + ')')

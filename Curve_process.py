@@ -11,7 +11,6 @@ def curve_loader(folder_path, file_name, measure_type):
     # only dynamic data preserved
     voi_dataframe = voi_dataframe[voi_dataframe.Series != 'PET - 10-30'].reset_index()
     # detect type of curve (25 or 70 frames)
-    times = pd.Series([1])
     if len(voi_dataframe.VOI) < 26:
         times = pd.Series([0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 360, 420,
                            480, 540, 600, 780, 960, 1140, 1320, 1500, 1680, 1860, 2040, 2220])
@@ -23,15 +22,16 @@ def curve_loader(folder_path, file_name, measure_type):
                            1110, 1140, 1170, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040, 2160, 2280])
     else:
         print('error: check dynamic curve length')
-    tac_dataframe = voi_dataframe[measure_type]  # type of activity value (mean, max, or peak)
-    tac_dataframe['Time'] = times  # finalisation of curve dataframe (indices, timepoints & activities)
-    # return tac_dataframe
+    tac_dataframe = pd.DataFrame({
+        measure_type: voi_dataframe[measure_type],  # type of activity value (mean, max, or peak)
+        'Time': times  # timepoints
+    })  # finalisation of curve dataframe
     return tac_dataframe
 
 
 # function for plotting time-activity curve
 def tac_plot(tac_df, measure_type):
-    time, activity = pd.Series.tolist(tac_df['Times']), pd.Series.tolist(tac_df[measure_type])
+    time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df[measure_type])
     plt.plot(time, activity)
     plt.xlabel('Time (sec)')
     plt.ylabel('SUVbw (' + measure_type + ')')
@@ -44,5 +44,7 @@ def tac_plot(tac_df, measure_type):
 folder = 'C:/Users/ф/PycharmProjects/Table_processer/'
 file = '001_ROI 3 - Sphere.csv'
 tac = curve_loader(folder, file, 'Mean')
-#tac_plot(tac, 'Mean')
+tac_plot(tac, 'Mean')
 print(tac)
+
+# tac.to_csv('tac', sep='\t')

@@ -44,9 +44,9 @@ def tac_stat(tac_df, measure_type):
     tac_max = max(tac_df[measure_type])  # maximal SUV on curve
     tac_max_ep = max(tac_df[tac_df.Time < 600][measure_type])  # maximum in early phase (0-10 min)
     tac_max_lp = max(tac_df[tac_df.Time >= 600][measure_type])  # maximum in late phase (>10 min)
-    t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[0]]  # time of maximal SUV
-    t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[0]]
-    t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[0]]
+    t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV
+    t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
+    t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
     return t_max_lp
 
 

@@ -40,12 +40,21 @@ def tac_plot(tac_df, measure_type):
 
 
 # function for computation TAC statistics
-# def tac_stat():
+def tac_stat(tac_df, measure_type):
+    tac_max = max(tac_df[measure_type])  # maximal SUV on curve
+    tac_max_ep = max(tac_df[tac_df.Time < 600][measure_type])  # maximum in early phase (0-10 min)
+    tac_max_lp = max(tac_df[tac_df.Time >= 600][measure_type])  # maximum in late phase (>10 min)
+    t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[0]]  # time of maximal SUV
+    t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[0]]
+    t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[0]]
+    return t_max_lp
+
 
 folder = 'C:/Users/ф/PycharmProjects/Table_processer/'
 file = '001_ROI 3 - Sphere.csv'
 tac = curve_loader(folder, file, 'Mean')
-tac_plot(tac, 'Mean')
-print(tac)
+#tac_plot(tac, 'Mean')
 
+#print(tac)
+print(tac_stat(tac, 'Mean'))
 # tac.to_csv('tac', sep='\t')

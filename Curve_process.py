@@ -35,7 +35,7 @@ def tac_plot(tac_df, measure_type):
     plt.figure(figsize=(12, 4))
     plt.plot(time, activity)
     plt.xlabel('Time (sec)')
-    plt.ylabel('SUVbw (' + measure_type + ')')
+    plt.ylabel(measure_type + ' (SUVbw)')
     plt.savefig(measure_type+'.png')
 
 

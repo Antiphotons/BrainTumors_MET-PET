@@ -16,47 +16,52 @@ def voi_choose(dataframe, voi):
 
 
 # function to convert kBq/ml to g/ml SUVbw
-def suv_converter(path, patient, values):
+def suv_converter(path, lesion, values):
     # Load table with patient weights & activities
     injection = pd.read_csv(path + 'for_SUV.csv', sep=' ',
                             dtype={'lesion_number': str, 'weight': int, 'activity': float})
-    lesion_string = injection[injection.lesion_number == patient].reset_index()
+    lesion_string = injection[injection.lesion_number == lesion].reset_index()
     weight = lesion_string.weight[0]
     activity = lesion_string.activity[0] * 37
-    return values * weight / activity
+    return round(values * weight / activity, 2)
 
 
 # function for sorting VOI info into separate csv files
-def voi_separation(patient_number, voi_df):
-    # delete CT information and last strings
+def voi_separation(lesion_number, voi_df):
+    # delete CT information and garbage strings
     voi_df = voi_df[voi_df.Volume != 'CT - CT 3.27 mm']
     voi_df = voi_df[voi_df.ROI != 'PERCIST 1.0']
+    voi_df = voi_df[voi_df.ROI != 'Ссылка на VOI - Sphere']
 
     # generating the list of VOI
     voi_list = pd.Series(voi_df['ROI']).unique()
 
-    # Particular VOI dataframes generation
+    # Particular ROI dataframes generation
     for j in range(len(voi_list)):
-        voi_df_nw = voi_choose(voi_df, voi_list[j])
+        voi_df_nw = voi_choose(voi_df, voi_list[j]).reset_index()  # choosing ROI
+        del voi_df_nw['index']
 
-        # generating a new data frame with limited VOI info
+        # generating a new data frame with limited ROI info
         voi_supp_info = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Patient Name', 'Volume', 'ROI', 'Unit']].reset_index()
         del voi_supp_info['index']
 
         voi_max = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Value']].reset_index()
         del voi_max['index']
+        voi_max.Value = pd.to_numeric(voi_max.Value)
         voi_mean = voi_df_nw[voi_df_nw.Stat == 'Средн.'][['Value']].reset_index()
         del voi_mean['index']
+        voi_mean.Value = pd.to_numeric(voi_mean.Value)
         voi_peak = voi_df_nw[voi_df_nw.Stat == 'Пик'][['Value']].reset_index()
         del voi_peak['index']
+        voi_peak.Value = pd.to_numeric(voi_peak.Value)
 
         # check for measure units and conversation if units are not SUV
-        if voi_df_nw.Unit[0] == 'kBq/ml':
-            voi_max = suv_converter(path_to_vois_folder, patient_number, voi_max)
-            voi_mean = suv_converter(path_to_vois_folder, patient_number, voi_mean)
-            voi_peak = suv_converter(path_to_vois_folder, patient_number, voi_peak)
-        elif voi_df_nw.Unit[0] != 'g/ml':
-            print('error in unit type in lesion number' + patient_number)  # here lesion num = patient num
+        if voi_supp_info.Unit[0] == 'kBq/ml':
+            voi_max.Value = suv_converter(path_to_vois_folder, lesion_number, voi_max.Value)
+            voi_mean.Value = suv_converter(path_to_vois_folder, lesion_number, voi_mean.Value)
+            voi_peak.Value = suv_converter(path_to_vois_folder, lesion_number, voi_peak.Value)
+        elif voi_supp_info.Unit[0] != 'g/ml':
+            print('error in unit type in lesion number' + lesion_number)  # here lesion num = patient num
 
         # VOI dataframe assembly
         voi_df_nw = pd.DataFrame({
@@ -68,7 +73,11 @@ def voi_separation(patient_number, voi_df):
             'Peak': voi_peak.Value
         })
 
-        voi_name = patient_number + '_' + voi_list[j] + '.csv'
+        # Save ROI with usable names
+        voi_name_df = pd.read_csv(path_to_vois_folder + 'ROI_list.csv', sep=';', dtype={'Lesion': str})
+        voi_name_df = voi_name_df[voi_name_df.Lesion == lesion_number]
+        voi_name_df = voi_name_df[voi_name_df.Filename == voi_list[j]]
+        voi_name = lesion_number + '_' + voi_name_df.ROI[3] + '.csv'  # error because voi_name_df.ROI is dataframe
         print(voi_name)
         voi_df_nw.to_csv(voi_name, sep='\t')
 
@@ -78,6 +87,6 @@ path_to_vois_folder = 'C:/Kotomin/Globalall/Methionine_dyn/02_TAC/VOI_TACs/'
 
 for i in range(3):
     file_num = i + 1
-    patient_num = "{0:0=3d}".format(file_num)
+    lesion_num = "{0:0=3d}".format(file_num)
     voi_df_unsort = voi_loader(path_to_vois_folder, file_num)
-    voi_separation(patient_num, voi_df_unsort)
+    voi_separation(lesion_num, voi_df_unsort)

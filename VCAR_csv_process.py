@@ -77,7 +77,7 @@ def voi_separation(lesion_number, voi_df):
         voi_name_df = pd.read_csv(path_to_vois_folder + 'ROI_list.csv', sep=';', dtype={'Lesion': str})
         voi_name_df = voi_name_df[voi_name_df.Lesion == lesion_number]
         voi_name_df = voi_name_df[voi_name_df.Filename == voi_list[j]]
-        voi_name = lesion_number + '_' + voi_name_df.ROI[3] + '.csv'  # error because voi_name_df.ROI is dataframe
+        voi_name = lesion_number + '_' + voi_name_df.ROI.tolist()[0] + '.csv'
         print(voi_name)
         voi_df_nw.to_csv(voi_name, sep='\t')
 

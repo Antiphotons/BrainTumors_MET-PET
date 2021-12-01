@@ -30,13 +30,13 @@ def curve_loader(folder_path, file_name, measure_type):
 
 
 # function for plotting time-activity curve
-def tac_plot(tac_df, measure_type):
+def tac_plot(tac_df, filename, measure_type):
     time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df[measure_type])
     plt.figure(figsize=(12, 4))
     plt.plot(time, activity)
     plt.xlabel('Time (sec)')
     plt.ylabel(measure_type + ' (SUVbw)')
-    plt.savefig(measure_type+'.png')
+    plt.savefig(filename + '_' + measure_type+'.png')
 
 
 # function for computation TAC statistics
@@ -47,14 +47,18 @@ def tac_stat(tac_df, measure_type):
     t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV
     t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
-    return t_max_lp
+    tac_char = [tac_max, t_max, tac_max_ep / t_max_ep]  # string of TAC characteristics
+    return tac_char
 
 
 folder = 'C:/Users/ф/PycharmProjects/Table_processer/'
-file = '001_ROI 3 - Sphere.csv'
-tac = curve_loader(folder, file, 'Mean')
-#tac_plot(tac, 'Mean')
+
+for i in range(3):  # number of lesions in working directory
+    for c in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
+        file = "{0:0=3d}".format(i + 1) + '_' + c + '.csv'
+        tac = curve_loader(folder, file, 'Mean')
+        tac_plot(tac, file, 'Mean')
 
 #print(tac)
-print(tac_stat(tac, 'Mean'))
+#print(tac_stat(tac, 'Mean'))
 # tac.to_csv('tac', sep='\t')

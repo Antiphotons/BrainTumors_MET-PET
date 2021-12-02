@@ -25,7 +25,7 @@ def curve_loader(folder_path, file_name, measure_type):
         print('error: check dynamic curve length')
     tac_dataframe = pd.DataFrame({
         measure_type: voi_dataframe[measure_type],  # type of activity value (mean, max, or peak)
-        'Time': times  # timepoints
+        'Time': times  # time points
     })  # finalisation of curve dataframe
     return tac_dataframe
 
@@ -48,20 +48,20 @@ def tac_stat(tac_df, measure_type):
     t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV
     t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
-    tac_char = [tac_max, t_max, tac_max_ep / t_max_ep]  # string of TAC characteristics
+    tac_char = [tac_max, t_max, tac_max_ep / t_max_ep * 60]  # string of TAC characteristics
     return tac_char
 
 
 folder = 'C:/Users/ф/PycharmProjects/Table_processer/'
 
-for i in range(3):  # number of lesions in working directory
-    for c in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
-        file = "{0:0=3d}".format(i + 1) + '_' + c
-        file_with_ext = file + '.csv'
-        if os.path.exists(folder + file_with_ext):
-            tac = curve_loader(folder, file_with_ext, 'Mean')
-            tac_plot(tac, file, 'Mean')
+for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
+    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early'])
 
-#print(tac)
-#print(tac_stat(tac, 'Mean'))
-# tac.to_csv('tac', sep='\t')
+    for i in range(3):  # number of lesions in working directory
+        file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
+        file_with_ext = file + '.csv'  # filename with extension for a file opening
+        if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
+            tac = curve_loader(folder, file_with_ext, 'Mean')  # tac dataframe load
+            # tac_plot(tac, file, 'Mean')  # tac plot draw
+            roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Mean')  # addition TAC statistics to table
+    roi_tbl.to_csv(roi + '.csv', sep='\t')

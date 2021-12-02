@@ -2,9 +2,9 @@ import pandas as pd
 
 
 # function for load information from csv with VOI info
-def voi_loader(folder_path, file_number):
+def voi_loader(folder_path, lesion_number):
     path = folder_path
-    file = "{0:0=3d}".format(file_number) + ".csv"
+    file = lesion_number + ".csv"
     voi_dataframe = pd.read_csv(path + file, sep=',')
     return voi_dataframe
 
@@ -86,7 +86,6 @@ def voi_separation(lesion_number, voi_df):
 path_to_vois_folder = 'C:/Kotomin/Globalall/Methionine_dyn/02_TAC/VOI_TACs/'
 
 for i in range(3):
-    file_num = i + 1
-    lesion_num = "{0:0=3d}".format(file_num)
-    voi_df_unsort = voi_loader(path_to_vois_folder, file_num)
+    lesion_num = "{0:0=3d}".format(i + 1)
+    voi_df_unsort = voi_loader(path_to_vois_folder, lesion_num)
     voi_separation(lesion_num, voi_df_unsort)

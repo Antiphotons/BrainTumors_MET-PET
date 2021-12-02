@@ -1,3 +1,4 @@
+import os.path
 import pandas as pd
 import matplotlib.pyplot as plt
 import math as m
@@ -36,7 +37,7 @@ def tac_plot(tac_df, filename, measure_type):
     plt.plot(time, activity)
     plt.xlabel('Time (sec)')
     plt.ylabel(measure_type + ' (SUVbw)')
-    plt.savefig(filename + '_' + measure_type+'.png')
+    plt.savefig(filename + '_' + measure_type.lower() + '.png')
 
 
 # function for computation TAC statistics
@@ -55,9 +56,11 @@ folder = 'C:/Users/ф/PycharmProjects/Table_processer/'
 
 for i in range(3):  # number of lesions in working directory
     for c in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
-        file = "{0:0=3d}".format(i + 1) + '_' + c + '.csv'
-        tac = curve_loader(folder, file, 'Mean')
-        tac_plot(tac, file, 'Mean')
+        file = "{0:0=3d}".format(i + 1) + '_' + c
+        file_with_ext = file + '.csv'
+        if os.path.exists(folder + file_with_ext):
+            tac = curve_loader(folder, file_with_ext, 'Mean')
+            tac_plot(tac, file, 'Mean')
 
 #print(tac)
 #print(tac_stat(tac, 'Mean'))

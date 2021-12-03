@@ -48,20 +48,33 @@ def tac_stat(tac_df, measure_type):
     t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV
     t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
-    tac_char = [tac_max, t_max, tac_max_ep / t_max_ep * 60]  # string of TAC characteristics
+    b1 = tac_df[tac_df.Time >= 600].Time.cov(tac_df[tac_df.Time >= 600][measure_type]) / tac_df[tac_df.Time >= 600].Time.var()  # slope coefficient of regression curve
+    tac_char = [tac_max, t_max, tac_max_ep / t_max_ep * 3600, b1 * 3600]  # string of TAC characteristics
     return tac_char
 
 
-folder = 'C:/Users/ф/PycharmProjects/Table_processer/'
+folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 
 for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
-    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early'])
+    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
 
     for i in range(3):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
             tac = curve_loader(folder, file_with_ext, 'Mean')  # tac dataframe load
-            # tac_plot(tac, file, 'Mean')  # tac plot draw
+            tac_plot(tac, file, 'Mean')  # tac plot draw
             roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Mean')  # addition TAC statistics to table
-    roi_tbl.to_csv(roi + '.csv', sep='\t')
+    roi_tbl.to_csv(roi + '_mean.csv', sep='\t')
+
+for roi in ['Max_uptake_sphere']:  # ROI types
+    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
+
+    for i in range(3):  # number of lesions in working directory
+        file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
+        file_with_ext = file + '.csv'  # filename with extension for a file opening
+        if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
+            tac = curve_loader(folder, file_with_ext, 'Maximum')  # tac dataframe load
+            tac_plot(tac, file, 'Maximum')  # tac plot draw
+            roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Maximum')  # addition TAC statistics to table
+    roi_tbl.to_csv(roi + '_maximum.csv', sep='\t')

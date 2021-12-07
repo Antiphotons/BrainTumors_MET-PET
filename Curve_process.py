@@ -30,11 +30,24 @@ def curve_loader(folder_path, file_name, measure_type):
     return tac_dataframe
 
 
+# function for computation coefficient of linear regression
+def slope(x, y):
+    return x.cov(y) / x.var()
+
+
+# function for computation intercept of linear regression
+def intercept(x, y):
+    return y.mean() - (x.mean() * slope(x, y))
+
+
 # function for plotting time-activity curve
 def tac_plot(tac_df, filename, measure_type):
     time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df[measure_type])
+    reg_line = [slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type]) * t +
+                intercept(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type]) for t in time]
+    late_phase = time.index(600)
     plt.figure(figsize=(12, 4))
-    plt.plot(time, activity)
+    plt.plot(time, activity, time[late_phase:], reg_line[late_phase:], 'r--')
     plt.xlabel('Time (sec)')
     plt.ylabel(measure_type + ' (SUVbw)')
     plt.savefig(filename + '_' + measure_type.lower() + '.png')
@@ -48,7 +61,7 @@ def tac_stat(tac_df, measure_type):
     t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV
     t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
-    b1 = tac_df[tac_df.Time >= 600].Time.cov(tac_df[tac_df.Time >= 600][measure_type]) / tac_df[tac_df.Time >= 600].Time.var()  # slope coefficient of regression curve
+    b1 = slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type])  # slope
     tac_char = [tac_max, t_max, tac_max_ep / t_max_ep * 3600, b1 * 3600]  # string of TAC characteristics
     return tac_char
 

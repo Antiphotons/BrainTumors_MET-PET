@@ -71,23 +71,23 @@ folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
 
-    for i in range(1):  # number of lesions in working directory
+    for i in range(22, 41):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
             tac = curve_loader(folder, file_with_ext, 'Mean')  # tac dataframe load
             tac_plot(tac, file, 'Mean')  # tac plot draw
             roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Mean')  # addition TAC statistics to table
-    roi_tbl.to_csv(roi + '_mean.csv', sep='\t')
+    #roi_tbl.to_csv(roi + '_mean.csv', sep='\t')
 
 for roi in ['Max_uptake_sphere']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
 
-    for i in range(1):  # number of lesions in working directory
+    for i in range(22, 41):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
             tac = curve_loader(folder, file_with_ext, 'Maximum')  # tac dataframe load
             tac_plot(tac, file, 'Maximum')  # tac plot draw
             roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Maximum')  # addition TAC statistics to table
-    roi_tbl.to_csv(roi + '_maximum.csv', sep='\t')
+    #roi_tbl.to_csv(roi + '_maximum.csv', sep='\t')

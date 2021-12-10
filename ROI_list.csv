@@ -1,7 +1,7 @@
 Index;Lesion;Filename;ROI
 0;001;ROI 4 - Free Hand;Norma
 1;001;ROI 5 - Sphere;Max_uptake_sphere
-2;001;;Max_uptake_circle
+2;001;ROI 1 - 2D Ellipse;Max_uptake_circle
 3;001;ROI 3 - Sphere;Lesion_sphere_1
 4;002;ROI 1 - Free Hand;Norma
 5;002;ROI 2 - 2D Ellipse;Norma_circle

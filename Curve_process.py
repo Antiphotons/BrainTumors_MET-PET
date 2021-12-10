@@ -10,7 +10,7 @@ def curve_loader(folder_path, file_name, measure_type):
     file = file_name  # input from user before function starts
     voi_dataframe = pd.read_csv(path + file, sep='\t')  # previous created VOI .csv
     # only dynamic data preserved
-    voi_dataframe = voi_dataframe[voi_dataframe['Series'].str.contains('Dynamic 40min DYN 3DMAC')].reset_index()
+    voi_dataframe = voi_dataframe[voi_dataframe['Series'].str.contains('Dynamic')].reset_index()
     # detect type of curve (25 or 70 frames)
     if len(voi_dataframe.VOI) < 26:
         times = pd.Series([0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 360, 420,
@@ -71,7 +71,7 @@ folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
 
-    for i in range(5):  # number of lesions in working directory
+    for i in range(1):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
@@ -83,7 +83,7 @@ for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
 for roi in ['Max_uptake_sphere']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
 
-    for i in range(5):  # number of lesions in working directory
+    for i in range(1):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists

@@ -262,3 +262,9 @@ Index;Lesion;Filename;ROI
 260;086;ROI 1 - Free Hand;Norma
 261;086;ROI 2 - Sphere;Max_uptake_sphere
 262;086;ROI 3 - 2D Ellipse;Max_uptake_circle
+263;087;ROI 1 - Free Hand;Norma
+264;087;ROI 2 - Sphere;Max_uptake_sphere
+265;087;ROI 3 - 2D Ellipse;Max_uptake_circle
+266;088;ROI 1 - Free Hand;Norma
+267;088;ROI 2 - Sphere;Max_uptake_sphere
+268;088;ROI 3 - 2D Ellipse;Max_uptake_circle

@@ -36,14 +36,14 @@ def tac_smoother(tac_df, measure_type):
 
         # 15-sec-frame to 30-sec-frame
         for i in range(0, 10):
-            tac_df[measure_type].loc[i] = sum(tac_df[measure_type].loc[i:i + 1]) / 2
+            tac_df.loc[i, measure_type] = sum(tac_df[measure_type].loc[i:i + 1]) / 2
             tac_df.drop(tac_df.index[i + 1], inplace=True)
             tac_df = tac_df.reset_index()
             del tac_df['index']
 
         # 15-sec-frame to 60-sec-frame
         for i in range(10, 15):
-            tac_df[measure_type].loc[i] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
+            tac_df.loc[i, measure_type] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
             tac_df.drop(tac_df.index[i + 3], inplace=True)
             tac_df.drop(tac_df.index[i + 2], inplace=True)
             tac_df.drop(tac_df.index[i + 1], inplace=True)
@@ -52,7 +52,7 @@ def tac_smoother(tac_df, measure_type):
 
         # 30-sec-frame to 120-sec-frame
         for i in range(15, 20):
-            tac_df[measure_type].loc[i] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
+            tac_df.loc[i, measure_type] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
             tac_df.drop(tac_df.index[i + 3], inplace=True)
             tac_df.drop(tac_df.index[i + 2], inplace=True)
             tac_df.drop(tac_df.index[i + 1], inplace=True)
@@ -93,34 +93,34 @@ def tac_stat(tac_df, measure_type):
     t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
     b1 = slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type])  # slope
-    tac_char = [tac_max, t_max, tac_max_ep / t_max_ep * 3600, b1 * 3600]  # string of TAC characteristics
+    tac_char = [tac_max, t_max, t_max_lp, tac_max_ep / t_max_ep * 3600, b1 * 3600]  # string of TAC characteristics
     return tac_char
 
 
 folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 
 for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
-    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
+    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
 
-    for i in range(0, 1):  # number of lesions in working directory
+    for i in range(0, 88):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
             tac = curve_loader(folder, file_with_ext, 'Mean')  # tac dataframe load
-            tac = tac_smoother(tac, 'Mean')
+            tac = tac_smoother(tac, 'Mean')  # transform 70-frame-TACs
             tac_plot(tac, file, 'Mean')  # tac plot draw
             roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Mean')  # addition TAC statistics to table
-    #roi_tbl.to_csv(roi + '_mean.csv', sep='\t')
+    roi_tbl.to_csv(roi + '_mean.csv', sep='\t')
 
 for roi in ['Max_uptake_sphere']:  # ROI types
-    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
+    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
 
-    for i in range(0, 1):  # number of lesions in working directory
+    for i in range(0, 88):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
             tac = curve_loader(folder, file_with_ext, 'Maximum')  # tac dataframe load
-            tac = tac_smoother(tac, 'Maximum')
+            tac = tac_smoother(tac, 'Maximum')  # transform 70-frame-TACs
             tac_plot(tac, file, 'Maximum')  # tac plot draw
             roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Maximum')  # addition TAC statistics to table
-    #roi_tbl.to_csv(roi + '_maximum.csv', sep='\t')
+    roi_tbl.to_csv(roi + '_maximum.csv', sep='\t')

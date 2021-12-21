@@ -17,16 +17,42 @@ times = pd.Series([0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195,
                            690, 720, 750, 780, 810, 840, 870, 900, 930, 960, 990, 1020, 1050, 1080,
                            1110, 1140, 1170, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040, 2160, 2280])
 
-tac_mean = pd.Series([m.log(t + 1) - (t + 1) ** (0.3) for t in tac['Mean'].tolist()])
+tac_mean = pd.Series([(m.log(t + 1) - (t + 1) ** (0.3)) ** 2 for t in tac['Mean'].tolist()])
 tac['Mean'], tac['Time'] = tac_mean, times
-new_mean = pd.Series([sum(tac.Mean.loc[i:i + 3]) / 4 for i in range(0, 40, 4)])
-new_time = pd.Series([tac.Time.loc[i] for i in range(0, 40, 4)])
-new_tac = pd.DataFrame({
-    'Mean': new_mean,
-    'Time': new_time
-})
-#for i in range(0, 40, 4):
-#    tac.Mean.loc[i] = sum(tac.Mean.loc[i:i + 3]) / 4
-#tac.drop(tac.index[2], inplace=True)
-#tac.drop(tac.index[3], inplace=True)
-print(new_tac.loc[0:10])
+
+for i in range(0, 10):
+    print(i)
+    tac.Mean.loc[i] = sum(tac.Mean.loc[i:i + 1]) / 2
+    tac.drop(tac.index[i + 1], inplace=True)
+    tac = tac.reset_index()
+    del tac['index']
+
+for i in range(10, 15):
+    print(i)
+    tac.Mean.loc[i] = sum(tac.Mean.loc[i:i + 3]) / 4
+    tac.drop(tac.index[i + 3], inplace=True)
+    tac.drop(tac.index[i + 2], inplace=True)
+    tac.drop(tac.index[i + 1], inplace=True)
+    tac = tac.reset_index()
+    del tac['index']
+
+for i in range(15, 20):
+    print(i)
+    tac.Mean.loc[i] = sum(tac.Mean.loc[i:i + 3]) / 4
+    tac.drop(tac.index[i + 3], inplace=True)
+    tac.drop(tac.index[i + 2], inplace=True)
+    tac.drop(tac.index[i + 1], inplace=True)
+    tac = tac.reset_index()
+    del tac['index']
+print(tac)
+
+plt.plot(tac.Time.tolist(), tac.Mean.tolist())
+plt.savefig('smooth.png')
+
+#new_mean = pd.Series([sum(tac.Mean.loc[i:i + 3]) / 4 for i in range(0, 40, 4)])
+#new_time = pd.Series([tac.Time.loc[i] for i in range(0, 40, 4)])
+#new_tac = pd.DataFrame({
+#    'Mean': new_mean,
+#    'Time': new_time
+#})
+

@@ -30,6 +30,37 @@ def curve_loader(folder_path, file_name, measure_type):
     return tac_dataframe
 
 
+# function for reorganise 70-frame TAC to 30-frame TAC
+def tac_smoother(tac_df, measure_type):
+    if len(tac_df.Time) > 25:
+
+        # 15-sec-frame to 30-sec-frame
+        for i in range(0, 10):
+            tac_df[measure_type].loc[i] = sum(tac_df[measure_type].loc[i:i + 1]) / 2
+            tac_df.drop(tac_df.index[i + 1], inplace=True)
+            tac_df = tac_df.reset_index()
+            del tac_df['index']
+
+        # 15-sec-frame to 60-sec-frame
+        for i in range(10, 15):
+            tac_df[measure_type].loc[i] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
+            tac_df.drop(tac_df.index[i + 3], inplace=True)
+            tac_df.drop(tac_df.index[i + 2], inplace=True)
+            tac_df.drop(tac_df.index[i + 1], inplace=True)
+            tac_df = tac_df.reset_index()
+            del tac_df['index']
+
+        # 30-sec-frame to 120-sec-frame
+        for i in range(15, 20):
+            tac_df[measure_type].loc[i] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
+            tac_df.drop(tac_df.index[i + 3], inplace=True)
+            tac_df.drop(tac_df.index[i + 2], inplace=True)
+            tac_df.drop(tac_df.index[i + 1], inplace=True)
+            tac_df = tac_df.reset_index()
+            del tac_df['index']
+    return tac_df
+
+
 # function for computation coefficient of linear regression
 def slope(x, y):
     return x.cov(y) / x.var()
@@ -71,11 +102,12 @@ folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
 
-    for i in range(22, 41):  # number of lesions in working directory
+    for i in range(0, 1):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
             tac = curve_loader(folder, file_with_ext, 'Mean')  # tac dataframe load
+            tac = tac_smoother(tac, 'Mean')
             tac_plot(tac, file, 'Mean')  # tac plot draw
             roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Mean')  # addition TAC statistics to table
     #roi_tbl.to_csv(roi + '_mean.csv', sep='\t')
@@ -83,11 +115,12 @@ for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
 for roi in ['Max_uptake_sphere']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'Slope_early', 'Slope_late'])
 
-    for i in range(22, 41):  # number of lesions in working directory
+    for i in range(0, 1):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
             tac = curve_loader(folder, file_with_ext, 'Maximum')  # tac dataframe load
+            tac = tac_smoother(tac, 'Maximum')
             tac_plot(tac, file, 'Maximum')  # tac plot draw
             roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Maximum')  # addition TAC statistics to table
     #roi_tbl.to_csv(roi + '_maximum.csv', sep='\t')

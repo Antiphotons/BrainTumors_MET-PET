@@ -1,0 +1,37 @@
+	Series	VOI	Maximum	Mean	Peak
+0	PET - 20-40min 3DMAC	ROI 3 - 2D Ellipse	2.37	1.98	
+1	PET - Dynamic 40min DYN 3DMAC - frame 1 (0s)	ROI 3 - 2D Ellipse	0.0	0.0	
+2	PET - Dynamic 40min DYN 3DMAC - frame 2 (5s)	ROI 3 - 2D Ellipse	0.0	0.0	
+3	PET - Dynamic 40min DYN 3DMAC - frame 3 (10s)	ROI 3 - 2D Ellipse	0.0	0.0	
+4	PET - Dynamic 40min DYN 3DMAC - frame 4 (15s)	ROI 3 - 2D Ellipse	0.0	0.0	
+5	PET - Dynamic 40min DYN 3DMAC - frame 5 (20s)	ROI 3 - 2D Ellipse	0.0	0.0	
+6	PET - Dynamic 40min DYN 3DMAC - frame 6 (25s)	ROI 3 - 2D Ellipse	0.0	0.0	
+7	PET - Dynamic 40min DYN 3DMAC - frame 7 (30s)	ROI 3 - 2D Ellipse	0.0	0.0	
+8	PET - Dynamic 40min DYN 3DMAC - frame 8 (35s)	ROI 3 - 2D Ellipse	18.54	2.21	
+9	PET - Dynamic 40min DYN 3DMAC - frame 9 (40s)	ROI 3 - 2D Ellipse	28.25	8.23	
+10	PET - Dynamic 40min DYN 3DMAC - frame 10 (45s)	ROI 3 - 2D Ellipse	79.09	12.16	
+11	PET - Dynamic 40min DYN 3DMAC - frame 11 (50s)	ROI 3 - 2D Ellipse	30.69	4.68	
+12	PET - Dynamic 40min DYN 3DMAC - frame 12 (55s)	ROI 3 - 2D Ellipse	31.98	8.46	
+13	PET - Dynamic 40min DYN 3DMAC - frame 13 (60s)	ROI 3 - 2D Ellipse	13.23	3.4	
+14	PET - Dynamic 40min DYN 3DMAC - frame 14 (70s)	ROI 3 - 2D Ellipse	16.5	5.23	
+15	PET - Dynamic 40min DYN 3DMAC - frame 15 (80s)	ROI 3 - 2D Ellipse	8.0	3.22	
+16	PET - Dynamic 40min DYN 3DMAC - frame 16 (90s)	ROI 3 - 2D Ellipse	6.81	1.31	
+17	PET - Dynamic 40min DYN 3DMAC - frame 17 (100s)	ROI 3 - 2D Ellipse	14.95	2.17	
+18	PET - Dynamic 40min DYN 3DMAC - frame 18 (110s)	ROI 3 - 2D Ellipse	9.79	1.69	
+19	PET - Dynamic 40min DYN 3DMAC - frame 19 (120s)	ROI 3 - 2D Ellipse	6.04	2.06	
+20	PET - Dynamic 40min DYN 3DMAC - frame 20 (150s)	ROI 3 - 2D Ellipse	3.75	1.96	
+21	PET - Dynamic 40min DYN 3DMAC - frame 21 (180s)	ROI 3 - 2D Ellipse	2.97	1.29	
+22	PET - Dynamic 40min DYN 3DMAC - frame 22 (210s)	ROI 3 - 2D Ellipse	2.64	1.08	
+23	PET - Dynamic 40min DYN 3DMAC - frame 23 (240s)	ROI 3 - 2D Ellipse	7.53	2.03	
+24	PET - Dynamic 40min DYN 3DMAC - frame 24 (270s)	ROI 3 - 2D Ellipse	5.46	1.78	
+25	PET - Dynamic 40min DYN 3DMAC - frame 25 (300s)	ROI 3 - 2D Ellipse	4.17	2.11	
+26	PET - Dynamic 40min DYN 3DMAC - frame 26 (360s)	ROI 3 - 2D Ellipse	5.63	2.67	
+27	PET - Dynamic 40min DYN 3DMAC - frame 27 (420s)	ROI 3 - 2D Ellipse	5.22	2.33	
+28	PET - Dynamic 40min DYN 3DMAC - frame 28 (480s)	ROI 3 - 2D Ellipse	3.71	2.14	
+29	PET - Dynamic 40min DYN 3DMAC - frame 29 (540s)	ROI 3 - 2D Ellipse	5.22	2.83	
+30	PET - Dynamic 40min DYN 3DMAC - frame 30 (600s)	ROI 3 - 2D Ellipse	3.26	1.87	
+31	PET - Dynamic 40min DYN 3DMAC - frame 31 (900s)	ROI 3 - 2D Ellipse	2.63	1.67	
+32	PET - Dynamic 40min DYN 3DMAC - frame 32 (1200s)	ROI 3 - 2D Ellipse	3.5	2.51	
+33	PET - Dynamic 40min DYN 3DMAC - frame 33 (1500s)	ROI 3 - 2D Ellipse	2.53	1.94	
+34	PET - Dynamic 40min DYN 3DMAC - frame 34 (1800s)	ROI 3 - 2D Ellipse	2.68	1.81	
+35	PET - Dynamic 40min DYN 3DMAC - frame 35 (2100s)	ROI 3 - 2D Ellipse	2.22	1.61	

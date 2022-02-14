@@ -1,0 +1,37 @@
+	Series	VOI	Maximum	Mean	Peak
+0	PET - 20-40min 3DMAC	ROI 2 - Sphere	2.76	2.16	2.29
+1	PET - Dynamic 40min DYN 3DMAC - frame 1 (0s)	ROI 2 - Sphere	0.0	0.0	0.0
+2	PET - Dynamic 40min DYN 3DMAC - frame 2 (5s)	ROI 2 - Sphere	0.0	0.0	0.0
+3	PET - Dynamic 40min DYN 3DMAC - frame 3 (10s)	ROI 2 - Sphere	0.0	0.0	0.0
+4	PET - Dynamic 40min DYN 3DMAC - frame 4 (15s)	ROI 2 - Sphere	0.0	0.0	0.0
+5	PET - Dynamic 40min DYN 3DMAC - frame 5 (20s)	ROI 2 - Sphere	6.83	0.34	0.34
+6	PET - Dynamic 40min DYN 3DMAC - frame 6 (25s)	ROI 2 - Sphere	15.65	1.2	1.13
+7	PET - Dynamic 40min DYN 3DMAC - frame 7 (30s)	ROI 2 - Sphere	9.77	0.8	0.67
+8	PET - Dynamic 40min DYN 3DMAC - frame 8 (35s)	ROI 2 - Sphere	5.0	0.36	0.37
+9	PET - Dynamic 40min DYN 3DMAC - frame 9 (40s)	ROI 2 - Sphere	10.64	0.74	0.76
+10	PET - Dynamic 40min DYN 3DMAC - frame 10 (45s)	ROI 2 - Sphere	5.53	0.52	0.54
+11	PET - Dynamic 40min DYN 3DMAC - frame 11 (50s)	ROI 2 - Sphere	8.9	0.61	0.79
+12	PET - Dynamic 40min DYN 3DMAC - frame 12 (55s)	ROI 2 - Sphere	14.56	0.92	0.78
+13	PET - Dynamic 40min DYN 3DMAC - frame 13 (60s)	ROI 2 - Sphere	8.28	1.16	1.07
+14	PET - Dynamic 40min DYN 3DMAC - frame 14 (70s)	ROI 2 - Sphere	3.78	0.66	0.66
+15	PET - Dynamic 40min DYN 3DMAC - frame 15 (80s)	ROI 2 - Sphere	12.63	1.4	1.59
+16	PET - Dynamic 40min DYN 3DMAC - frame 16 (90s)	ROI 2 - Sphere	9.39	1.25	1.35
+17	PET - Dynamic 40min DYN 3DMAC - frame 17 (100s)	ROI 2 - Sphere	8.83	1.16	1.08
+18	PET - Dynamic 40min DYN 3DMAC - frame 18 (110s)	ROI 2 - Sphere	4.81	0.99	0.98
+19	PET - Dynamic 40min DYN 3DMAC - frame 19 (120s)	ROI 2 - Sphere	2.98	1.25	1.34
+20	PET - Dynamic 40min DYN 3DMAC - frame 20 (150s)	ROI 2 - Sphere	2.78	0.89	0.93
+21	PET - Dynamic 40min DYN 3DMAC - frame 21 (180s)	ROI 2 - Sphere	5.36	1.5	1.76
+22	PET - Dynamic 40min DYN 3DMAC - frame 22 (210s)	ROI 2 - Sphere	5.06	1.39	1.34
+23	PET - Dynamic 40min DYN 3DMAC - frame 23 (240s)	ROI 2 - Sphere	3.18	1.17	1.19
+24	PET - Dynamic 40min DYN 3DMAC - frame 24 (270s)	ROI 2 - Sphere	6.23	1.57	1.63
+25	PET - Dynamic 40min DYN 3DMAC - frame 25 (300s)	ROI 2 - Sphere	2.51	1.34	1.35
+26	PET - Dynamic 40min DYN 3DMAC - frame 26 (360s)	ROI 2 - Sphere	3.41	1.61	1.69
+27	PET - Dynamic 40min DYN 3DMAC - frame 27 (420s)	ROI 2 - Sphere	3.12	1.48	1.67
+28	PET - Dynamic 40min DYN 3DMAC - frame 28 (480s)	ROI 2 - Sphere	3.91	1.71	1.82
+29	PET - Dynamic 40min DYN 3DMAC - frame 29 (540s)	ROI 2 - Sphere	3.63	1.63	1.6
+30	PET - Dynamic 40min DYN 3DMAC - frame 30 (600s)	ROI 2 - Sphere	2.46	1.72	1.8
+31	PET - Dynamic 40min DYN 3DMAC - frame 31 (900s)	ROI 2 - Sphere	3.02	2.07	2.22
+32	PET - Dynamic 40min DYN 3DMAC - frame 32 (1200s)	ROI 2 - Sphere	2.85	2.05	2.14
+33	PET - Dynamic 40min DYN 3DMAC - frame 33 (1500s)	ROI 2 - Sphere	3.23	2.02	2.1
+34	PET - Dynamic 40min DYN 3DMAC - frame 34 (1800s)	ROI 2 - Sphere	3.25	2.27	2.41
+35	PET - Dynamic 40min DYN 3DMAC - frame 35 (2100s)	ROI 2 - Sphere	3.57	2.29	2.49

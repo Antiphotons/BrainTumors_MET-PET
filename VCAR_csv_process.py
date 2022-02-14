@@ -1,4 +1,5 @@
 import pandas as pd
+import os.path
 
 
 # function for load information from csv with VOI info
@@ -52,6 +53,7 @@ def voi_separation(lesion_number, voi_df):
         del voi_mean['index']
         voi_mean.Value = pd.to_numeric(voi_mean.Value)
         voi_peak = voi_df_nw[voi_df_nw.Stat == 'Пик'][['Value']].reset_index()
+        voi_peak.loc[(voi_peak.Value == "Недоступно"), 'Value'] = 0  # zeroing inadequate peak values
         del voi_peak['index']
         voi_peak.Value = pd.to_numeric(voi_peak.Value)
 
@@ -85,7 +87,8 @@ def voi_separation(lesion_number, voi_df):
 # VOI info load in dataframe
 path_to_vois_folder = 'C:/Kotomin/Globalall/Methionine_dyn/02_TAC/VOI_TACs/'
 
-for i in range(82, 83):
+for i in range(714, 754):
     lesion_num = "{0:0=3d}".format(i + 1)
-    voi_df_unsort = voi_loader(path_to_vois_folder, lesion_num)
-    voi_separation(lesion_num, voi_df_unsort)
+    if os.path.exists(path_to_vois_folder + lesion_num + '.csv'):  # checking if a lesion .csv file exists
+        voi_df_unsort = voi_loader(path_to_vois_folder, lesion_num)
+        voi_separation(lesion_num, voi_df_unsort)

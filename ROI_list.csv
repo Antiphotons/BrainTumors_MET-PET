@@ -268,3 +268,303 @@ Index;Lesion;Filename;ROI
 266;088;ROI 1 - Free Hand;Norma
 267;088;ROI 2 - Sphere;Max_uptake_sphere
 268;088;ROI 3 - 2D Ellipse;Max_uptake_circle
+269;089;ROI 1 - Free Hand;Norma
+270;089;ROI 2 - Sphere;Max_uptake_sphere
+271;089;ROI 3 - 2D Ellipse;Max_uptake_circle
+272;090;ROI 1 - Free Hand;Norma
+273;090;ROI 2 - Sphere;Max_uptake_sphere
+274;090;ROI 3 - 2D Ellipse;Max_uptake_circle
+275;091;ROI 1 - Free Hand;Norma
+276;091;ROI 2 - Sphere;Max_uptake_sphere
+277;091;ROI 3 - 2D Ellipse;Max_uptake_circle
+278;092;ROI 1 - Free Hand;Norma
+279;092;ROI 2 - Sphere;Max_uptake_sphere
+280;092;ROI 3 - 2D Ellipse;Max_uptake_circle
+281;093;ROI 1 - Free Hand;Norma
+282;093;ROI 2 - Sphere;Max_uptake_sphere
+283;093;ROI 3 - 2D Ellipse;Max_uptake_circle
+284;094;ROI 1 - Free Hand;Norma
+285;094;ROI 2 - Sphere;Max_uptake_sphere
+286;094;ROI 3 - 2D Ellipse;Max_uptake_circle
+287;095;ROI 1 - Free Hand;Norma
+288;095;ROI 2 - Sphere;Max_uptake_sphere
+289;095;ROI 3 - 2D Ellipse;Max_uptake_circle
+290;096;ROI 1 - Free Hand;Norma
+291;096;ROI 2 - Sphere;Max_uptake_sphere
+292;096;ROI 3 - 2D Ellipse;Max_uptake_circle
+293;097;ROI 1 - Free Hand;Norma
+294;097;ROI 2 - Sphere;Max_uptake_sphere
+295;097;ROI 3 - 2D Ellipse;Max_uptake_circle
+296;098;ROI 1 - Free Hand;Norma
+297;098;ROI 2 - Sphere;Max_uptake_sphere
+298;098;ROI 3 - 2D Ellipse;Max_uptake_circle
+299;099;ROI 1 - Free Hand;Norma
+300;099;ROI 2 - Sphere;Max_uptake_sphere
+301;099;ROI 3 - 2D Ellipse;Max_uptake_circle
+302;100;ROI 1 - Free Hand;Norma
+303;100;ROI 2 - Sphere;Max_uptake_sphere
+304;100;ROI 3 - 2D Ellipse;Max_uptake_circle
+305;101;ROI 1 - Free Hand;Norma
+306;101;ROI 2 - Sphere;Max_uptake_sphere
+307;101;ROI 3 - 2D Ellipse;Max_uptake_circle
+308;102;ROI 1 - Free Hand;Norma
+309;102;ROI 2 - Sphere;Max_uptake_sphere
+310;102;ROI 3 - 2D Ellipse;Max_uptake_circle
+311;103;ROI 1 - Free Hand;Norma
+312;103;ROI 2 - Sphere;Max_uptake_sphere
+313;103;ROI 3 - 2D Ellipse;Max_uptake_circle
+314;104;ROI 1 - Free Hand;Norma
+315;104;ROI 2 - Sphere;Max_uptake_sphere
+316;104;ROI 3 - 2D Ellipse;Max_uptake_circle
+317;105;ROI 1 - Free Hand;Norma
+318;105;ROI 2 - Sphere;Max_uptake_sphere
+319;105;ROI 3 - 2D Ellipse;Max_uptake_circle
+320;106;ROI 1 - Free Hand;Norma
+321;106;ROI 2 - Sphere;Max_uptake_sphere
+322;106;ROI 3 - 2D Ellipse;Max_uptake_circle
+323;107;ROI 1 - Free Hand;Norma
+324;107;ROI 2 - Sphere;Max_uptake_sphere
+325;107;ROI 3 - 2D Ellipse;Max_uptake_circle
+326;108;ROI 1 - Free Hand;Norma
+327;108;ROI 2 - Sphere;Max_uptake_sphere
+328;108;ROI 3 - 2D Ellipse;Max_uptake_circle
+329;109;ROI 1 - Free Hand;Norma
+330;109;ROI 2 - Sphere;Max_uptake_sphere
+331;109;ROI 3 - 2D Ellipse;Max_uptake_circle
+332;110;ROI 1 - Free Hand;Norma
+333;110;ROI 2 - Sphere;Max_uptake_sphere
+334;110;ROI 3 - 2D Ellipse;Max_uptake_circle
+335;111;ROI 1 - Free Hand;Norma
+336;111;ROI 2 - Sphere;Max_uptake_sphere
+337;111;ROI 3 - 2D Ellipse;Max_uptake_circle
+338;112;ROI 1 - Free Hand;Norma
+339;112;ROI 2 - Sphere;Max_uptake_sphere
+340;112;ROI 3 - 2D Ellipse;Max_uptake_circle
+341;113;ROI 1 - Free Hand;Norma
+342;113;ROI 2 - Sphere;Max_uptake_sphere
+343;113;ROI 3 - 2D Ellipse;Max_uptake_circle
+344;114;ROI 1 - Free Hand;Norma
+345;114;ROI 2 - Sphere;Max_uptake_sphere
+346;114;ROI 3 - 2D Ellipse;Max_uptake_circle
+347;115;ROI 1 - Free Hand;Norma
+348;115;ROI 2 - Sphere;Max_uptake_sphere
+349;115;ROI 3 - 2D Ellipse;Max_uptake_circle
+350;116;ROI 1 - Free Hand;Norma
+351;116;ROI 2 - Sphere;Max_uptake_sphere
+352;116;ROI 3 - 2D Ellipse;Max_uptake_circle
+353;117;ROI 1 - Free Hand;Norma
+354;117;ROI 2 - Sphere;Max_uptake_sphere
+355;117;ROI 3 - 2D Ellipse;Max_uptake_circle
+356;118;ROI 1 - Free Hand;Norma
+357;118;ROI 2 - Sphere;Max_uptake_sphere
+358;118;ROI 3 - 2D Ellipse;Max_uptake_circle
+359;119;ROI 1 - Free Hand;Norma
+360;119;ROI 2 - Sphere;Max_uptake_sphere
+361;119;ROI 3 - 2D Ellipse;Max_uptake_circle
+362;120;ROI 1 - Free Hand;Norma
+363;120;ROI 2 - Sphere;Max_uptake_sphere
+364;120;ROI 3 - 2D Ellipse;Max_uptake_circle
+365;121;ROI 1 - Free Hand;Norma
+366;121;ROI 2 - Sphere;Max_uptake_sphere
+367;121;ROI 3 - 2D Ellipse;Max_uptake_circle
+368;122;ROI 1 - Free Hand;Norma
+369;122;ROI 2 - Sphere;Max_uptake_sphere
+370;122;ROI 3 - 2D Ellipse;Max_uptake_circle
+371;123;ROI 1 - Free Hand;Norma
+372;123;ROI 2 - Sphere;Max_uptake_sphere
+373;123;ROI 3 - 2D Ellipse;Max_uptake_circle
+374;124;ROI 1 - Free Hand;Norma
+375;124;ROI 2 - Sphere;Max_uptake_sphere
+376;124;ROI 3 - 2D Ellipse;Max_uptake_circle
+377;125;ROI 1 - Free Hand;Norma
+378;125;ROI 2 - Sphere;Max_uptake_sphere
+379;125;ROI 3 - 2D Ellipse;Max_uptake_circle
+380;126;ROI 1 - Free Hand;Norma
+381;126;ROI 2 - Sphere;Max_uptake_sphere
+382;126;ROI 3 - 2D Ellipse;Max_uptake_circle
+383;127;ROI 1 - Free Hand;Norma
+384;127;ROI 2 - Sphere;Max_uptake_sphere
+385;127;ROI 3 - 2D Ellipse;Max_uptake_circle
+386;128;ROI 1 - Free Hand;Norma
+387;128;ROI 2 - Sphere;Max_uptake_sphere
+388;128;ROI 3 - 2D Ellipse;Max_uptake_circle
+389;129;ROI 1 - Free Hand;Norma
+390;129;ROI 2 - Sphere;Max_uptake_sphere
+391;129;ROI 3 - 2D Ellipse;Max_uptake_circle
+392;130;ROI 1 - Free Hand;Norma
+393;130;ROI 2 - Sphere;Max_uptake_sphere
+394;130;ROI 3 - 2D Ellipse;Max_uptake_circle
+395;131;ROI 1 - Free Hand;Norma
+396;131;ROI 2 - Sphere;Max_uptake_sphere
+397;131;ROI 3 - 2D Ellipse;Max_uptake_circle
+398;132;ROI 1 - Free Hand;Norma
+399;132;ROI 2 - Sphere;Max_uptake_sphere
+400;132;ROI 3 - 2D Ellipse;Max_uptake_circle
+401;133;ROI 1 - Free Hand;Norma
+402;133;ROI 2 - Sphere;Max_uptake_sphere
+403;133;ROI 3 - 2D Ellipse;Max_uptake_circle
+404;134;ROI 1 - Free Hand;Norma
+405;134;ROI 2 - Sphere;Max_uptake_sphere
+406;134;ROI 3 - 2D Ellipse;Max_uptake_circle
+407;135;ROI 1 - Free Hand;Norma
+408;135;ROI 2 - Sphere;Max_uptake_sphere
+409;135;ROI 3 - 2D Ellipse;Max_uptake_circle
+410;136;ROI 1 - Free Hand;Norma
+411;136;ROI 2 - Sphere;Max_uptake_sphere
+412;136;ROI 3 - 2D Ellipse;Max_uptake_circle
+413;137;ROI 1 - Free Hand;Norma
+414;137;ROI 2 - Sphere;Max_uptake_sphere
+415;137;ROI 3 - 2D Ellipse;Max_uptake_circle
+416;138;ROI 1 - Free Hand;Norma
+417;138;ROI 2 - Sphere;Max_uptake_sphere
+418;138;ROI 3 - 2D Ellipse;Max_uptake_circle
+419;139;ROI 1 - Free Hand;Norma
+420;139;ROI 2 - Sphere;Max_uptake_sphere
+421;139;ROI 3 - 2D Ellipse;Max_uptake_circle
+422;140;ROI 1 - Free Hand;Norma
+423;140;ROI 2 - Sphere;Max_uptake_sphere
+424;140;ROI 3 - 2D Ellipse;Max_uptake_circle
+425;141;ROI 1 - Free Hand;Norma
+426;141;ROI 2 - Sphere;Max_uptake_sphere
+427;141;ROI 3 - 2D Ellipse;Max_uptake_circle
+428;142;ROI 1 - Free Hand;Norma
+429;142;ROI 2 - Sphere;Max_uptake_sphere
+430;142;ROI 3 - 2D Ellipse;Max_uptake_circle
+431;143;ROI 1 - Free Hand;Norma
+432;143;ROI 2 - Sphere;Max_uptake_sphere
+433;143;ROI 3 - 2D Ellipse;Max_uptake_circle
+434;144;ROI 1 - Free Hand;Norma
+435;144;ROI 2 - Sphere;Max_uptake_sphere
+436;144;ROI 3 - 2D Ellipse;Max_uptake_circle
+437;145;ROI 1 - Free Hand;Norma
+438;145;ROI 2 - Sphere;Max_uptake_sphere
+439;145;ROI 3 - 2D Ellipse;Max_uptake_circle
+440;146;ROI 1 - Free Hand;Norma
+441;146;ROI 2 - Sphere;Max_uptake_sphere
+442;146;ROI 3 - 2D Ellipse;Max_uptake_circle
+443;147;ROI 1 - Free Hand;Norma
+444;147;ROI 2 - Sphere;Max_uptake_sphere
+445;147;ROI 3 - 2D Ellipse;Max_uptake_circle
+446;148;ROI 1 - Free Hand;Norma
+447;148;ROI 2 - Sphere;Max_uptake_sphere
+448;148;ROI 3 - 2D Ellipse;Max_uptake_circle
+449;149;ROI 1 - Free Hand;Norma
+450;149;ROI 2 - Sphere;Max_uptake_sphere
+451;149;ROI 3 - 2D Ellipse;Max_uptake_circle
+2147;715;ROI 1 - Free Hand;Norma
+2148;715;ROI 2 - Sphere;Max_uptake_sphere
+2149;715;ROI 3 - 2D Ellipse;Max_uptake_circle
+2150;716;ROI 1 - Free Hand;Norma
+2151;716;ROI 2 - Sphere;Max_uptake_sphere
+2152;716;ROI 3 - 2D Ellipse;Max_uptake_circle
+2153;717;ROI 1 - Free Hand;Norma
+2154;717;ROI 2 - Sphere;Max_uptake_sphere
+2155;717;ROI 3 - 2D Ellipse;Max_uptake_circle
+2156;718;ROI 1 - Free Hand;Norma
+2157;718;ROI 2 - Sphere;Max_uptake_sphere
+2158;718;ROI 3 - 2D Ellipse;Max_uptake_circle
+2159;719;ROI 1 - Free Hand;Norma
+2160;719;ROI 2 - Sphere;Max_uptake_sphere
+2161;719;ROI 3 - 2D Ellipse;Max_uptake_circle
+2162;720;ROI 1 - Free Hand;Norma
+2163;720;ROI 2 - Sphere;Max_uptake_sphere
+2164;720;ROI 3 - 2D Ellipse;Max_uptake_circle
+2165;721;ROI 1 - Free Hand;Norma
+2166;721;ROI 2 - Sphere;Max_uptake_sphere
+2167;721;ROI 3 - 2D Ellipse;Max_uptake_circle
+2168;722;ROI 1 - Free Hand;Norma
+2169;722;ROI 2 - Sphere;Max_uptake_sphere
+2170;722;ROI 3 - 2D Ellipse;Max_uptake_circle
+2171;723;ROI 1 - Free Hand;Norma
+2172;723;ROI 2 - Sphere;Max_uptake_sphere
+2173;723;ROI 3 - 2D Ellipse;Max_uptake_circle
+2174;724;ROI 1 - Free Hand;Norma
+2175;724;ROI 2 - Sphere;Max_uptake_sphere
+2176;724;ROI 3 - 2D Ellipse;Max_uptake_circle
+2177;725;ROI 1 - Free Hand;Norma
+2178;725;ROI 2 - Sphere;Max_uptake_sphere
+2179;725;ROI 3 - 2D Ellipse;Max_uptake_circle
+2180;726;ROI 1 - Free Hand;Norma
+2181;726;ROI 2 - Sphere;Max_uptake_sphere
+2182;726;ROI 3 - 2D Ellipse;Max_uptake_circle
+2183;727;ROI 1 - Free Hand;Norma
+2184;727;ROI 2 - Sphere;Max_uptake_sphere
+2185;727;ROI 3 - 2D Ellipse;Max_uptake_circle
+2186;728;ROI 1 - Free Hand;Norma
+2187;728;ROI 2 - Sphere;Max_uptake_sphere
+2188;728;ROI 3 - 2D Ellipse;Max_uptake_circle
+2189;729;ROI 1 - Free Hand;Norma
+2190;729;ROI 2 - Sphere;Max_uptake_sphere
+2191;729;ROI 3 - 2D Ellipse;Max_uptake_circle
+2192;730;ROI 1 - Free Hand;Norma
+2193;730;ROI 2 - Sphere;Max_uptake_sphere
+2194;730;ROI 3 - 2D Ellipse;Max_uptake_circle
+2195;731;ROI 1 - Free Hand;Norma
+2196;731;ROI 2 - Sphere;Max_uptake_sphere
+2197;731;ROI 3 - 2D Ellipse;Max_uptake_circle
+2198;732;ROI 1 - Free Hand;Norma
+2199;732;ROI 2 - Sphere;Max_uptake_sphere
+2200;732;ROI 3 - 2D Ellipse;Max_uptake_circle
+2201;733;ROI 1 - Free Hand;Norma
+2202;733;ROI 2 - Sphere;Max_uptake_sphere
+2203;733;ROI 3 - 2D Ellipse;Max_uptake_circle
+2204;734;ROI 1 - Free Hand;Norma
+2205;734;ROI 2 - Sphere;Max_uptake_sphere
+2206;734;ROI 3 - 2D Ellipse;Max_uptake_circle
+2207;735;ROI 1 - Free Hand;Norma
+2208;735;ROI 2 - Sphere;Max_uptake_sphere
+2209;735;ROI 3 - 2D Ellipse;Max_uptake_circle
+2210;736;ROI 1 - Free Hand;Norma
+2211;736;ROI 2 - Sphere;Max_uptake_sphere
+2212;736;ROI 3 - 2D Ellipse;Max_uptake_circle
+2213;737;ROI 1 - Free Hand;Norma
+2214;737;ROI 2 - Sphere;Max_uptake_sphere
+2215;737;ROI 3 - 2D Ellipse;Max_uptake_circle
+2216;738;ROI 1 - Free Hand;Norma
+2217;738;ROI 2 - Sphere;Max_uptake_sphere
+2218;738;ROI 3 - 2D Ellipse;Max_uptake_circle
+2219;739;ROI 1 - Free Hand;Norma
+2220;739;ROI 2 - Sphere;Max_uptake_sphere
+2221;739;ROI 3 - 2D Ellipse;Max_uptake_circle
+2222;740;ROI 1 - Free Hand;Norma
+2223;740;ROI 2 - Sphere;Max_uptake_sphere
+2224;740;ROI 3 - 2D Ellipse;Max_uptake_circle
+2225;741;ROI 1 - Free Hand;Norma
+2226;741;ROI 2 - Sphere;Max_uptake_sphere
+2227;741;ROI 3 - 2D Ellipse;Max_uptake_circle
+2228;742;ROI 1 - Free Hand;Norma
+2229;742;ROI 2 - Sphere;Max_uptake_sphere
+2230;742;ROI 3 - 2D Ellipse;Max_uptake_circle
+2231;743;ROI 1 - Free Hand;Norma
+2232;743;ROI 2 - Sphere;Max_uptake_sphere
+2233;743;ROI 3 - 2D Ellipse;Max_uptake_circle
+2234;744;ROI 1 - Free Hand;Norma
+2235;744;ROI 2 - Sphere;Max_uptake_sphere
+2236;744;ROI 3 - 2D Ellipse;Max_uptake_circle
+2237;745;ROI 1 - Free Hand;Norma
+2238;745;ROI 2 - Sphere;Max_uptake_sphere
+2239;745;ROI 3 - 2D Ellipse;Max_uptake_circle
+2240;746;ROI 1 - Free Hand;Norma
+2241;746;ROI 2 - Sphere;Max_uptake_sphere
+2242;746;ROI 3 - 2D Ellipse;Max_uptake_circle
+2243;747;ROI 1 - Free Hand;Norma
+2244;747;ROI 2 - Sphere;Max_uptake_sphere
+2245;747;ROI 3 - 2D Ellipse;Max_uptake_circle
+2246;748;ROI 1 - Free Hand;Norma
+2247;748;ROI 2 - Sphere;Max_uptake_sphere
+2248;748;ROI 3 - 2D Ellipse;Max_uptake_circle
+2249;749;ROI 1 - Free Hand;Norma
+2250;749;ROI 2 - Sphere;Max_uptake_sphere
+2251;749;ROI 3 - 2D Ellipse;Max_uptake_circle
+2252;750;ROI 1 - Free Hand;Norma
+2253;750;ROI 2 - Sphere;Max_uptake_sphere
+2254;750;ROI 3 - 2D Ellipse;Max_uptake_circle
+2255;751;ROI 1 - Free Hand;Norma
+2256;751;ROI 2 - Sphere;Max_uptake_sphere
+2257;751;ROI 3 - 2D Ellipse;Max_uptake_circle
+2258;752;ROI 1 - Free Hand;Norma
+2259;752;ROI 2 - Sphere;Max_uptake_sphere
+2260;752;ROI 3 - 2D Ellipse;Max_uptake_circle
+2261;753;ROI 1 - Free Hand;Norma
+2262;753;ROI 2 - Sphere;Max_uptake_sphere
+2263;753;ROI 3 - 2D Ellipse;Max_uptake_circle

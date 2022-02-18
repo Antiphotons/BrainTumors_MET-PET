@@ -12,7 +12,11 @@ def curve_loader(folder_path, file_name, measure_type):
     # only dynamic data preserved
     voi_dataframe = voi_dataframe[voi_dataframe['Series'].str.contains('Dynamic')].reset_index()
     # detect type of curve (25 or 70 frames)
-    if len(voi_dataframe.VOI) < 26:
+    if len(voi_dataframe.VOI) == 35:
+        times = pd.Series([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80,
+                           90, 100, 110, 120, 150, 180, 210, 240, 270, 300, 360, 420,
+                           480, 540, 600, 900, 1200, 1500, 1800, 2100])
+    elif len(voi_dataframe.VOI) < 26:
         times = pd.Series([0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 360, 420,
                            480, 540, 600, 780, 960, 1140, 1320, 1500, 1680, 1860, 2040, 2220])
     elif 25 < len(voi_dataframe.VOI) < 71:
@@ -32,7 +36,7 @@ def curve_loader(folder_path, file_name, measure_type):
 
 # function for reorganise 70-frame TAC to 30-frame TAC
 def tac_smoother(tac_df, measure_type):
-    if len(tac_df.Time) > 25:
+    if len(tac_df.Time) > 36:
 
         # 15-sec-frame to 30-sec-frame
         for i in range(0, 10):
@@ -102,7 +106,7 @@ folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
 
-    for i in range(0, 88):  # number of lesions in working directory
+    for i in range(14, 54):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
@@ -115,7 +119,7 @@ for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
 for roi in ['Max_uptake_sphere']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
 
-    for i in range(0, 88):  # number of lesions in working directory
+    for i in range(14, 54):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists

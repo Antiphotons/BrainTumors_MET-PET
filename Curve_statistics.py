@@ -5,12 +5,17 @@ import numpy as np
 
 
 # function to generate median & percentile curves from TACs
-def curve_percentilles(TAC_df):
-    TAC
-    median_curve = TAC_df.
+def curve_percentiles(TAC_df):
+    y_df = TAC_df.drop(columns='Times')
+    median = [np.percentile(y_df.loc[i], 50) for i in range(len(TAC_df.Times))]
+    low_percentile = [np.percentile(y_df.loc[i], 5) for i in range(len(TAC_df.Times))]
+    high_percentile = [np.percentile(y_df.loc[i], 95) for i in range(len(TAC_df.Times))]
+    TAC_df['Median'], TAC_df['Low_percentile'], TAC_df['High_percentile'] = median, \
+                                                                            low_percentile, high_percentile
+    return TAC_df
 
 # function for loading patients dataframe
-def histo_filter(histotype, roi):
+def histo_filter(histotype, roi, measure_type):
     filtr_lesion_df = lesion_dataframe[lesion_dataframe.Histo == histotype]
     for i in range(len(filtr_lesion_df.Les)):
         filename = str(filtr_lesion_df.Les[i]) + '.csv'

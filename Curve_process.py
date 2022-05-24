@@ -106,7 +106,7 @@ folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
 
-    for i in range(14, 54):  # number of lesions in working directory
+    for i in range(72, 99):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
@@ -119,7 +119,7 @@ for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
 for roi in ['Max_uptake_sphere']:  # ROI types
     roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
 
-    for i in range(14, 54):  # number of lesions in working directory
+    for i in range(72, 99):  # number of lesions in working directory
         file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
         file_with_ext = file + '.csv'  # filename with extension for a file opening
         if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists

@@ -14,14 +14,6 @@ def curve_percentiles(tac_df):
                                                                             low_percentile, high_percentile
     return tac_df
 
-# function for
-def filtered_TAC_gen(lesion_dataframe, histotype, roi, measure_type):
-    filtr_lesion_df = lesion_dataframe[lesion_dataframe.Histo == histotype]
-    for i in range(len(filtr_lesion_df.Les)):
-        filename = str(filtr_lesion_df.Les[i]) + '.csv'
-        tac_dataframe = curve_loader(folder, filename, 'Mean')
-        return tac_dataframe
-
 
 # function for load & transform VOI file to curve dataframe
 def curve_loader(folder_path, file_name, measure_type):
@@ -53,6 +45,70 @@ def curve_loader(folder_path, file_name, measure_type):
     return tac_dataframe
 
 
+# function for reorganise 70-frame TAC to 30-frame TAC
+def tac_smoother(tac_df, measure_type):
+    if len(tac_df.Time) > 36:
+
+        # 15-sec-frame to 30-sec-frame
+        for i in range(0, 10):
+            tac_df.loc[i, measure_type] = sum(tac_df[measure_type].loc[i:i + 1]) / 2
+            tac_df.drop(tac_df.index[i + 1], inplace=True)
+            tac_df = tac_df.reset_index()
+            del tac_df['index']
+
+        # 15-sec-frame to 60-sec-frame
+        for i in range(10, 15):
+            tac_df.loc[i, measure_type] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
+            tac_df.drop(tac_df.index[i + 3], inplace=True)
+            tac_df.drop(tac_df.index[i + 2], inplace=True)
+            tac_df.drop(tac_df.index[i + 1], inplace=True)
+            tac_df = tac_df.reset_index()
+            del tac_df['index']
+
+        # 30-sec-frame to 120-sec-frame
+        for i in range(15, 20):
+            tac_df.loc[i, measure_type] = sum(tac_df[measure_type].loc[i:i + 3]) / 4
+            tac_df.drop(tac_df.index[i + 3], inplace=True)
+            tac_df.drop(tac_df.index[i + 2], inplace=True)
+            tac_df.drop(tac_df.index[i + 1], inplace=True)
+            tac_df = tac_df.reset_index()
+            del tac_df['index']
+    return tac_df
+
+
+# function for reorganise 30-frame TAC to 25-frame TAC
+def tac_transformer(tac_df, measure_type):
+    if len(tac_df.Time) == 30:
+
+        # 120-sec-frames to 180-sec-frames
+        nw_tac_df = pd.DataFrame(columns=['Time', measure_type])
+        for i in range(0, 15):
+            nw_tac_df.loc[i] = tac_df.loc[i]
+        cnt = 0
+        for i in range(15, 30, 3):
+            nw_tac_df.loc[i - cnt, measure_type] = sum(tac_df[measure_type].loc[i:i + 1]) / 2
+            nw_tac_df.loc[i - cnt, 'Time'] = tac_df[i, 'Time']
+            nw_tac_df.loc[i + 1 - cnt, measure_type] = sum(tac_df[measure_type].loc[i + 1:i + 2]) / 2
+            nw_tac_df.loc[i + 1 - cnt, 'Time'] = tac_df[i, 'Time'] + 180
+            cnt += 1
+        nw_tac_df = nw_tac_df.reset_index()
+        del nw_tac_df['index']
+    return nw_tac_df
+
+
+# function for generate dataframe consist of TACs of specific histotype, measure and roi
+def filtered_tac_gen(folder_path, lesion_dataframe, histotype, roi, measure_type):
+    filtr_lesion_df = lesion_dataframe[lesion_dataframe.Histo == histotype]
+
+    for i in range(len(filtr_lesion_df.Les)):
+        filename = str(filtr_lesion_df.Les[i]) + '_' + roi + '.csv'
+        if os.path.exists(folder_path + filename):  # checking if a ROI file exists
+            tac = curve_loader(folder_path, filename, measure_type)
+            tac = tac_smoother(tac, measure_type)  # transform 70-frame-TACs
+            tac = tac_transformer(tac, measure_type) # transform 30-frame-TACs to 25-frame-TACs
+    return tac_dataframe
+
+
 folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
 lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep=';')
 
@@ -61,5 +117,5 @@ for h in ['ОДГ', 'АнОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'Мен', 'М�
     for r in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
         roi = r
         measure = 'Mean'
-        filtered_tac_df = filtered_TAC_gen(lesion_df, histo, roi, measure)
+        filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)
         tac_df = curve_percentiles(filtered_tac_df)

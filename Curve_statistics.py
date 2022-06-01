@@ -6,10 +6,10 @@ import numpy as np
 
 # function to generate median & percentile curves from TACs
 def curve_percentiles(tac_df):
-    y_df = tac_df.drop(columns='Times')
-    median = [np.percentile(y_df.loc[i], 50) for i in range(len(tac_df.Times))]
-    low_percentile = [np.percentile(y_df.loc[i], 5) for i in range(len(tac_df.Times))]
-    high_percentile = [np.percentile(y_df.loc[i], 95) for i in range(len(tac_df.Times))]
+    y_df = tac_df.drop(columns='Time')
+    median = [np.percentile(y_df.loc[i], 50) for i in range(len(tac_df.Time))]
+    low_percentile = [np.percentile(y_df.loc[i], 5) for i in range(len(tac_df.Time))]
+    high_percentile = [np.percentile(y_df.loc[i], 95) for i in range(len(tac_df.Time))]
     tac_df['Median'], tac_df['Low_percentile'], tac_df['High_percentile'] = median, \
                                                                             low_percentile, high_percentile
     return tac_df
@@ -87,35 +87,71 @@ def tac_transformer(tac_df, measure_type):
         cnt = 0
         for i in range(15, 30, 3):
             nw_tac_df.loc[i - cnt, measure_type] = sum(tac_df[measure_type].loc[i:i + 1]) / 2
-            nw_tac_df.loc[i - cnt, 'Time'] = tac_df[i, 'Time']
+            nw_tac_df.loc[i - cnt, 'Time'] = tac_df.loc[i, 'Time']
             nw_tac_df.loc[i + 1 - cnt, measure_type] = sum(tac_df[measure_type].loc[i + 1:i + 2]) / 2
-            nw_tac_df.loc[i + 1 - cnt, 'Time'] = tac_df[i, 'Time'] + 180
+            nw_tac_df.loc[i + 1 - cnt, 'Time'] = tac_df.loc[i, 'Time'] + 180
             cnt += 1
         nw_tac_df = nw_tac_df.reset_index()
         del nw_tac_df['index']
+    else:
+        nw_tac_df = tac_df
     return nw_tac_df
 
 
 # function for generate dataframe consist of TACs of specific histotype, measure and roi
 def filtered_tac_gen(folder_path, lesion_dataframe, histotype, roi, measure_type):
     filtr_lesion_df = lesion_dataframe[lesion_dataframe.Histo == histotype]
+    filtr_lesion_df = filtr_lesion_df.reset_index()
+    del filtr_lesion_df['index']
+    tac_df = pd.DataFrame(columns=['Time'])
 
     for i in range(len(filtr_lesion_df.Les)):
-        filename = str(filtr_lesion_df.Les[i]) + '_' + roi + '.csv'
+        filename = "{0:0=3d}".format(filtr_lesion_df.Les[i]) + '_' + roi + '.csv'
         if os.path.exists(folder_path + filename):  # checking if a ROI file exists
             tac = curve_loader(folder_path, filename, measure_type)
             tac = tac_smoother(tac, measure_type)  # transform 70-frame-TACs
-            tac = tac_transformer(tac, measure_type) # transform 30-frame-TACs to 25-frame-TACs
-    return tac_dataframe
+            tac = tac_transformer(tac, measure_type)  # transform 30-frame-TACs to 25-frame-TACs
+            tac_df.Time = tac.Time
+            tac_df[filename] = tac[measure_type]
+    return tac_df
+
+
+# function for computation coefficient of linear regression
+def slope(x, y):
+    return x.cov(y) / x.var()
+
+
+# function for computation intercept of linear regression
+def intercept(x, y):
+    return y.mean() - (x.mean() * slope(x, y))
+
+
+# function for plotting time-activity curve
+def tac_plot(tac_df, filename, measure_type):
+    time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df['Median'])
+    first, second = pd.Series.tolist(tac_df['019_Max_uptake_sphere.csv']), pd.Series.tolist(tac_df['070_Max_uptake_sphere.csv'])
+    l_perc, h_perc = pd.Series.tolist(tac_df['Low_percentile']), pd.Series.tolist(tac_df['High_percentile'])
+    reg_line = [slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600]['Median']) * t +
+                intercept(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600]['Median']) for t in time]
+    late_phase = time.index(600)
+    plt.figure(figsize=(12, 4))
+    plt.plot(time, first, time, second)
+    #ax = plt.subplot()
+    #ax.fill_between(time, l_perc, h_perc, color='m', alpha=.1)
+    plt.xlabel('Time (sec)')
+    plt.ylabel(measure_type + ' (SUVbw)')
+    plt.savefig(filename + '_' + measure_type.lower() + '.png')
 
 
 folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
-lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep=';')
+lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep='\t')
 
-for h in ['ОДГ', 'АнОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'Мен', 'Мтс', 'DBCLC']:  # histotypes
+for h in ['АнОДГ']: #['ОДГ', 'АнОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'Мен', 'Мтс', 'DBCLC']:  # histotypes
     histo = h
-    for r in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
+    for r in ['Max_uptake_sphere']:
+        #'Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
         roi = r
-        measure = 'Mean'
+        measure = 'Maximum'
         filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)
-        tac_df = curve_percentiles(filtered_tac_df)
+        tac_with_perc = curve_percentiles(filtered_tac_df)
+        tac_plot(tac_with_perc, histo + '_' + roi, measure)  # tac plot draw

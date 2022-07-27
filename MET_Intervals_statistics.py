@@ -41,12 +41,12 @@ def rel_residuals(dataframe, parameter):
     column1 = parameter + '-1'
     column2 = parameter + '-2'
     column3 = parameter + '-3'
-    rel_res_st1 = (dataframe[columnst] - dataframe[column1]) / dataframe[columnst]
-    rel_res_st2 = dataframe[columnst] - dataframe[column2] / dataframe[columnst]
-    rel_res_st3 = dataframe[columnst] - dataframe[column3] / dataframe[columnst]
-    rel_res_21 = dataframe[column2] - dataframe[column1] / dataframe[column1]
-    rel_res_31 = dataframe[column3] - dataframe[column1] / dataframe[column1]
-    rel_res_32 = dataframe[column3] - dataframe[column2] / dataframe[column1]
+    rel_res_st1 = (dataframe[columnst] - dataframe[column1]) / dataframe[columnst] * 100
+    rel_res_st2 = (dataframe[columnst] - dataframe[column2]) / dataframe[columnst] * 100
+    rel_res_st3 = (dataframe[columnst] - dataframe[column3]) / dataframe[columnst] * 100
+    rel_res_21 = (dataframe[column2] - dataframe[column1]) / dataframe[column1] * 100
+    rel_res_31 = (dataframe[column3] - dataframe[column1]) / dataframe[column1] * 100
+    rel_res_32 = (dataframe[column3] - dataframe[column2]) / dataframe[column1] * 100
     rel_res_df = pd.DataFrame({
         parameter + '_st-1': rel_res_st1,
         parameter + '_st-2': rel_res_st2,
@@ -80,12 +80,16 @@ median_df.index = parameters
 median_df.index.name = 'Parameter'
 
 for prmtr in parameters:
+    # calculate the differences between intervals
+    res_dataframe = residuals(Int_dataframe, prmtr)
+    res_dataframe.to_csv(prmtr + '_residuals.csv', sep='\t')  # save absolute residuls to .csv table
+    rel_res_dataframe = residuals(Int_dataframe, prmtr)
+    rel_res_dataframe.to_csv(prmtr + '_relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv table
+
     for intrv in intervals:
         p = prmtr + '-' + intrv
-        med_quart = column_median(Int_dataframe, p)
-        median_df[intrv].loc[prmtr] = med_quart
+        med_quart = column_median(Int_dataframe, p)  # calculate medians and quartiles of parameters and intervals
+        median_df[intrv].loc[prmtr] = med_quart  # fill out the median tables
+        median_df.to_csv('Medians_and_quartiles.csv', sep='\t')
 
-    res_dataframe = residuals(Int_dataframe, prmtr)
-    res_dataframe.to_csv(prmtr + '_residuals.csv', sep='\t')
-    rel_res_dataframe = residuals(Int_dataframe, prmtr)
-    rel_res_dataframe.to_csv(prmtr + '_relative_residuals.csv', sep='\t')
+

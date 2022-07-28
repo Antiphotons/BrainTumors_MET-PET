@@ -63,33 +63,49 @@ folder = 'C:/Kotomin/Globalall/Methionine_dyn/01_Intervals/'
 file = 'Intervals.csv'
 
 # df load & empty rows deletion
-Int_dataframe = pd.read_csv(folder + file, sep='\t')
-Int_dataframe = Int_dataframe[Int_dataframe.Case != ''].reset_index()
-del Int_dataframe['Index']
+Int_dataframe = pd.read_csv(folder + file, sep='\t', dtype={'Case': 'Int64'})
+Int_dataframe = Int_dataframe[Int_dataframe.Case.notnull()].reset_index()
+del Int_dataframe['index']
 
-# creation of table with medians
-parameters = ['SUVnorm', 'SUV1.3', 'SUV10mm', 'SUVmax', 'TBR1.3', 'TBRmax', 'TBR10', 'TMV1.3']
+# creating an empty tables with residuals
+res_dataframe = pd.DataFrame()
+rel_res_dataframe = pd.DataFrame()
+
+# creating an empty table with medians
+parameters = ['SUVnorm', 'SUV1.3', 'SUV10', 'SUVmax', 'TBR1.3', 'TBRmax', 'TBR10', 'TMV1.3']
 intervals = ['st', '1', '2', '3']
-median_df = pd.DataFrame({
-    'st': [],
-    '1': [],
-    '2': [],
-    '3': []
-})
-median_df.index = parameters
+median_df = pd.DataFrame(
+    {
+        'st': ['', '', '', '', '', '', '', ''],
+        '1': ['', '', '', '', '', '', '', ''],
+        '2': ['', '', '', '', '', '', '', ''],
+        '3': ['', '', '', '', '', '', '', '']
+    },
+    index=parameters,
+)
 median_df.index.name = 'Parameter'
 
 for prmtr in parameters:
     # calculate the differences between intervals
-    res_dataframe = residuals(Int_dataframe, prmtr)
-    res_dataframe.to_csv(prmtr + '_residuals.csv', sep='\t')  # save absolute residuls to .csv table
-    rel_res_dataframe = residuals(Int_dataframe, prmtr)
-    rel_res_dataframe.to_csv(prmtr + '_relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv table
+    res_dataframe = pd.concat([res_dataframe, residuals(Int_dataframe, prmtr)], axis=1)  # join absolute residuals
+    rel_res_dataframe = pd.concat([rel_res_dataframe, rel_residuals(Int_dataframe, prmtr)], axis=1)  # join
+    # relative residuals
 
+    # calculate medians & quartiles and join them to dataframe
     for intrv in intervals:
         p = prmtr + '-' + intrv
-        med_quart = column_median(Int_dataframe, p)  # calculate medians and quartiles of parameters and intervals
+        med_quart = column_median(Int_dataframe, p)  # calculate medians and quartiles of parameters on intervals
         median_df[intrv].loc[prmtr] = med_quart  # fill out the median tables
-        median_df.to_csv('Medians_and_quartiles.csv', sep='\t')
+
+    for res in ['st-1', 'st-2', 'st-3', '2-1', '3-2']:
+        r = prmtr + '_' + res
+        res_med_quart = column_median(res_dataframe, r)  # calculate medians and quartiles of residuals
+        rel_res_med_quart = column_median(rel_res_dataframe, r)  # calculate medians and quartiles of % residuals
+        #res_median_df[res].loc[prmtr] = res_med_quart  # fill out the res median tables
 
 
+
+res_dataframe.to_csv('residuals.csv', sep='\t')  # save absolute residuals to .csv
+rel_res_dataframe.to_csv('relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv
+median_df.to_csv('Medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
+#res_median_df.to_csv('Medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv

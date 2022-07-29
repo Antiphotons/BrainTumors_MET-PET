@@ -6,9 +6,9 @@ import numpy as np
 
 # Function for computation of medians and quartiles of indexes
 def column_median(dataframe, column):
-    median = np.percentile(dataframe[column], 50)
-    low_quartile = np.percentile(dataframe[column], 25)
-    high_quartile = np.percentile(dataframe[column], 75)
+    median = round(np.percentile(dataframe[column], 50), 2)
+    low_quartile = round(np.percentile(dataframe[column], 25), 2)
+    high_quartile = round(np.percentile(dataframe[column], 75), 2)
     return str(median) + ' (' + str(low_quartile) + '–' + str(high_quartile) + ')'
 
 
@@ -72,14 +72,27 @@ res_dataframe = pd.DataFrame()
 rel_res_dataframe = pd.DataFrame()
 
 # creating an empty table with medians
-parameters = ['SUVnorm', 'SUV1.3', 'SUV10', 'SUVmax', 'TBR1.3', 'TBRmax', 'TBR10', 'TMV1.3']
+parameters = ['SUVnorm', 'SUV1.3', 'SUV10', 'SUVmax', 'TBR1.3', 'TBR10', 'TBRmax', 'TMV1.3']
 intervals = ['st', '1', '2', '3']
 median_df = pd.DataFrame(
     {
         'st': ['', '', '', '', '', '', '', ''],
         '1': ['', '', '', '', '', '', '', ''],
         '2': ['', '', '', '', '', '', '', ''],
-        '3': ['', '', '', '', '', '', '', '']
+        '3': ['', '', '', '', '', '', '', ''],
+        '2-1': ['', '', '', '', '', '', '', ''],
+        '3-2': ['', '', '', '', '', '', '', '']
+    },
+    index=parameters,
+)
+median_df.index.name = 'Parameter'
+
+# creating an empty table with medians of residuals
+res_median_df = pd.DataFrame(
+    {
+        'st-1': ['', '', '', '', '', '', '', ''],
+        'st-2': ['', '', '', '', '', '', '', ''],
+        'st-3': ['', '', '', '', '', '', '', '']
     },
     index=parameters,
 )
@@ -87,9 +100,11 @@ median_df.index.name = 'Parameter'
 
 for prmtr in parameters:
     # calculate the differences between intervals
-    res_dataframe = pd.concat([res_dataframe, residuals(Int_dataframe, prmtr)], axis=1)  # join absolute residuals
-    rel_res_dataframe = pd.concat([rel_res_dataframe, rel_residuals(Int_dataframe, prmtr)], axis=1)  # join
-    # relative residuals
+
+    # join absolute residuals
+    res_dataframe = np.round(pd.concat([res_dataframe, residuals(Int_dataframe, prmtr)], axis=1), 3)
+    # join relative residuals
+    rel_res_dataframe = np.round(pd.concat([rel_res_dataframe, rel_residuals(Int_dataframe, prmtr)], axis=1), 3)
 
     # calculate medians & quartiles and join them to dataframe
     for intrv in intervals:
@@ -97,15 +112,18 @@ for prmtr in parameters:
         med_quart = column_median(Int_dataframe, p)  # calculate medians and quartiles of parameters on intervals
         median_df[intrv].loc[prmtr] = med_quart  # fill out the median tables
 
-    for res in ['st-1', 'st-2', 'st-3', '2-1', '3-2']:
+    for rel_res in ['2-1', '3-2']:
+        rr = prmtr + '_' + rel_res
+        rel_res_med_quart = column_median(rel_res_dataframe, rr)  # calculate medians and quartiles of % residuals
+        median_df[rel_res].loc[prmtr] = rel_res_med_quart  # fill out the median tables
+
+    # calculate medians & quartiles of differences between 20 and 10 min intervals
+    for res in ['st-1', 'st-2', 'st-3']:
         r = prmtr + '_' + res
         res_med_quart = column_median(res_dataframe, r)  # calculate medians and quartiles of residuals
-        rel_res_med_quart = column_median(rel_res_dataframe, r)  # calculate medians and quartiles of % residuals
-        #res_median_df[res].loc[prmtr] = res_med_quart  # fill out the res median tables
-
-
+        res_median_df[res].loc[prmtr] = res_med_quart  # fill out the res median tables
 
 res_dataframe.to_csv('residuals.csv', sep='\t')  # save absolute residuals to .csv
 rel_res_dataframe.to_csv('relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv
-median_df.to_csv('Medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
-#res_median_df.to_csv('Medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
+median_df.to_csv('medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
+res_median_df.to_csv('res_medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv

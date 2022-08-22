@@ -73,7 +73,7 @@ res_dataframe, rel_res_dataframe = pd.DataFrame(), pd.DataFrame()
 # creating an empty table with medians
 parameters = ['SUVnorm', 'SUV1.3', 'SUV10', 'SUVmax', 'TBR1.3', 'TBR10', 'TBRmax', 'TMV1.3']
 intervals = ['st', '1', '2', '3']
-def_median_df = pd.DataFrame(
+median_df = pd.DataFrame(
     {
         'st': ['', '', '', '', '', '', '', ''],
         '1': ['', '', '', '', '', '', '', ''],
@@ -84,7 +84,7 @@ def_median_df = pd.DataFrame(
     },
     index=parameters,
 )
-def_median_df.index.name = 'Parameter'
+median_df.index.name = 'Parameter'
 
 # creating an empty table with medians of residuals
 res_median_df = pd.DataFrame(
@@ -102,8 +102,8 @@ ben_int_df = Int_dataframe[Int_dataframe.Malignancy == 'Benign'].reset_index()
 del ben_int_df['index']
 mal_int_df = Int_dataframe[Int_dataframe.Malignancy == 'Malignant'].reset_index()
 del mal_int_df['index']
-ben_rel_res_df, mal_rel_res_df = rel_res_dataframe, rel_res_dataframe  # empty dataframes
-median_df, ben_median_df, mal_median_df = def_median_df, def_median_df, def_median_df  # unfilled dataframes of medians
+ben_rel_res_df, mal_rel_res_df = rel_res_dataframe.copy(deep=True), rel_res_dataframe.copy(deep=True)  # empty df
+ben_median_df, mal_median_df = median_df.copy(deep=True), median_df.copy(deep=True)  # unfilled dataframes of medians
 
 
 for prmtr in parameters:
@@ -125,10 +125,9 @@ for prmtr in parameters:
 
         # repeat for benign and malignant lesions
         ben_med_quart = column_median(ben_int_df, p)
-        ben_median_df[intrv].loc[prmtr] = 666
-        #mal_med_quart = column_median(mal_int_df, p)
-        #mal_median_df[intrv].loc[prmtr] = mal_med_quart
-        print(p, med_quart, median_df[intrv].loc[prmtr])
+        ben_median_df[intrv].loc[prmtr] = ben_med_quart
+        mal_med_quart = column_median(mal_int_df, p)
+        mal_median_df[intrv].loc[prmtr] = mal_med_quart
 
     for rel_res in ['2-1', '3-2']:
         rr = prmtr + '_' + rel_res
@@ -152,7 +151,5 @@ for prmtr in parameters:
 #median_df.to_csv('medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
 #res_median_df.to_csv('res_medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
 
-#ben_median_df.to_csv('ben_medians_and_quartiles.csv', sep='\t')  # save benign medians & quartiles to .csv
-#mal_median_df.to_csv('mal_medians_and_quartiles.csv', sep='\t')  # save malignant medians & quartiles to .csv
-
-#print(mal_med_quart)
+ben_median_df.to_csv('ben_medians_and_quartiles.csv', sep='\t')  # save benign medians & quartiles to .csv
+mal_median_df.to_csv('mal_medians_and_quartiles.csv', sep='\t')  # save malignant medians & quartiles to .csv

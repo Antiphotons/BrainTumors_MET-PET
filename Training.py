@@ -3,22 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-parameters = ['tits', 'dicks']
-x = pd.DataFrame(
-    {
-        'big': ['', ''],
-        'small': ['', '']
-    },
-    index=parameters,
-)
-x.index.name = 'Parameter'
-
-dwarf, elf = x, x
-
-dwarf['big'].loc['tits'] = 6
-elf['big'].loc['tits'] = 2
-print(dwarf)
-print()
-print(elf)
-print()
-print(x)
+parameters = [[0.00001, 0.00001, 0.03278, 0.00003, 0.45510, 0.18604, 0.21214, 0.77499], 'huets']
+parameters = [round(parameters[0][i], 5) for i in range(len(parameters[0]))]
+print(parameters)

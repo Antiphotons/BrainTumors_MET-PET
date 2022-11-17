@@ -7,8 +7,8 @@ import numpy as np
 # Function for computation of medians and quartiles of indexes
 def column_median(dataframe, column):
     median = round(np.percentile(dataframe[column], 50), 2)
-    low_quartile = round(np.percentile(dataframe[column], 25), 2)
-    high_quartile = round(np.percentile(dataframe[column], 75), 2)
+    low_quartile = round(np.percentile(dataframe[column], 5), 2)
+    high_quartile = round(np.percentile(dataframe[column], 95), 2)
     return str(median) + ' (' + str(low_quartile) + '–' + str(high_quartile) + ')'
 
 

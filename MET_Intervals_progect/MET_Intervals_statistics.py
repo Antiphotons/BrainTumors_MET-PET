@@ -111,13 +111,15 @@ ben_median_df, mal_median_df = median_df.copy(deep=True), median_df.copy(deep=Tr
 for prmtr in parameters:
     # calculate the differences between intervals
 
-    # join absolute residuals
+    # join residuals
     res_dataframe = np.round(pd.concat([res_dataframe, residuals(Int_dataframe, prmtr)], axis=1), 3)
-    # join relative residuals
+    # join relative (percent) residuals
     rel_res_dataframe = np.round(pd.concat([rel_res_dataframe, rel_residuals(Int_dataframe, prmtr)], axis=1), 3)
     # repeat last step for benign and malignant lesions
     ben_rel_res_df = np.round(pd.concat([ben_rel_res_df, rel_residuals(ben_int_df, prmtr)], axis=1), 3)
     mal_rel_res_df = np.round(pd.concat([mal_rel_res_df, rel_residuals(mal_int_df, prmtr)], axis=1), 3)
+    # generate dataframes with absolute values of residuals
+    abs_res_dataframe, abs_rel_res_dataframe = abs(res_dataframe), abs(rel_res_dataframe)
 
     # calculate medians & quartiles and join them to dataframe
     for intrv in intervals:
@@ -155,8 +157,10 @@ for prmtr in parameters:
 
 #res_dataframe.to_csv('residuals.csv', sep='\t')  # save absolute residuals to .csv
 #rel_res_dataframe.to_csv('relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv
+abs_res_dataframe.to_csv('abs_residuals', sep='\t')  # save absolute residuals to .csv
+abs_rel_res_dataframe.to_csv('abs_relative_residuals', sep='\t')  # save absolute % residuals to .csv
 #median_df.to_csv('medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
 #res_median_df.to_csv('res_medians_and_quartiles.csv', sep='\t')  # save residuals medians & quartiles to .csv
-rel_res_median_df.to_csv('rel_res_medians_and_quartiles.csv', sep='\t')  # relative residuals medians & quartiles
+#rel_res_median_df.to_csv('rel_res_medians_and_quartiles.csv', sep='\t')  # relative residuals medians & quartiles
 #ben_median_df.to_csv('ben_medians_and_quartiles.csv', sep='\t')  # save benign medians & quartiles to .csv
 #mal_median_df.to_csv('mal_medians_and_quartiles.csv', sep='\t')  # save malignant medians & quartiles to .csv

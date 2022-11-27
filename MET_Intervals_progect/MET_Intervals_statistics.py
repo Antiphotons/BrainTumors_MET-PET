@@ -2,7 +2,6 @@ import os.path
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from scipy.stats import levene
 
 
 # Function for computation of medians and quartiles of indexes
@@ -11,11 +10,6 @@ def column_median(dataframe, column):
     low_quartile = round(np.percentile(dataframe[column], 5), 2)
     high_quartile = round(np.percentile(dataframe[column], 95), 2)
     return str(median) + ' (' + str(low_quartile) + '–' + str(high_quartile) + ')'
-
-
-def brown_forsythe(dataframe, column1, column2):
-    variance = np.var(dataframe[column1])
-    bf = levene(dataframe[column1], dataframe[column2], center='median')
 
 
 # Function for computation of residuals

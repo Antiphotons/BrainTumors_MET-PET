@@ -4,10 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import levene
 
-params = ['a', 'b', 'c', '1-1', '2-2', '3-3', 'd', 'e', 'f']
-resids = ['1-1', '2-2', '3-3']
-new_params = [params[i] for i in range(len(params)) if i % 6 < 3]
-
-var_df = pd.DataFrame(data=None, index=params, columns=resids)
-var_df['2-2']['c'] = 'dfjng'
-print(new_params)
+df = pd.DataFrame({
+    '1': [1, 5, 9, 13, 17],
+    '2': [1, 3, 5, 7, 9]
+})
+df.loc[len(df.index)] = [99, 99]
+print(df)

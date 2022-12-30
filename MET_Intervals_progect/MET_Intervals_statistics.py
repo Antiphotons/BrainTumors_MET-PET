@@ -2,6 +2,7 @@ import os.path
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from Difference_statistics import brown_forsythe
 
 
 # Function for computation of medians and quartiles of indexes

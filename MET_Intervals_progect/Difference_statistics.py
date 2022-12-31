@@ -4,15 +4,27 @@ from scipy.stats import levene
 from scipy.stats import median_abs_deviation
 import statsmodels.stats.multitest as sm
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+# function for dataset loading and processing preparing
+def df_load(path, option):
+    df = pd.read_csv(path, sep='\t')
+    params = [df.columns[i].split('_')[0] for i in range(1, df.shape[1], 6)]  # derive parameters names
+    resids = [df.columns[i].split('_')[1] for i in range(1, 7)][0:3]  # derive residuals names and filter first three
+    new_df = pd.DataFrame(data=None, index=params, columns=resids)  # empty dataframe for filling
+    options = {'df': 0, 'params': 1, 'resids': 2, 'new_df': 3}
+    opt = [df, params, resids, new_df]
+    return opt[options.get(option)]
 
 
 # function for computation of residual variances
 def variances(path, dig):
-    df = pd.read_csv(path, sep='\t')
-    params = [df.columns[i].split('_')[0] for i in range(1, df.shape[1], 6)]  # derive parameters names
-    resids = [df.columns[i].split('_')[1] for i in range(1, 7)][0:3]  # derive residuals names and filter first three
-    var_df = pd.DataFrame(data=None, index=params, columns=resids)  # empty dataframe for variances
 
+    # dataframe loading
+    df, params, resids, var_df = df_load(path, 'df'), df_load(path, 'params'), \
+                                 df_load(path, 'resids'), df_load(path, 'new_df')
+    # dataframe filling
     for r in resids:
         for p in params:
             col = df[p + '_' + r]
@@ -22,11 +34,12 @@ def variances(path, dig):
 
 # function for computation of residual median absolute deviations
 def mad(path, dig):
-    df = pd.read_csv(path, sep='\t')
-    params = [df.columns[i].split('_')[0] for i in range(1, df.shape[1], 6)]  # derive parameters names
-    resids = [df.columns[i].split('_')[1] for i in range(1, 7)][0:3]  # derive residuals names and filter first three
-    mad_df = pd.DataFrame(data=None, index=params, columns=resids)  # empty dataframe for variances
 
+    # dataframe loading
+    df, params, resids, mad_df = df_load(path, 'df'), df_load(path, 'params'), \
+                                 df_load(path, 'resids'), df_load(path, 'new_df')
+
+    # dataframe filling
     for r in resids:
         for p in params:
             col = df[p + '_' + r]
@@ -36,9 +49,9 @@ def mad(path, dig):
 
 # function for computation of Brown-Forsythe p-values (significance of variance difference)
 def brown_forsythe(path, dig):
-    df = pd.read_csv(path, sep='\t')
-    params = [df.columns[i].split('_')[0] for i in range(1, df.shape[1], 6)]  # derive parameters names
-    resids = [df.columns[i].split('_')[1] for i in range(1, 7)][0:3]  # derive residuals names and filter first three
+
+    # dataframe loading
+    df, params, resids = df_load(path, 'df'), df_load(path, 'params'), df_load(path, 'resids')
     new_columns = [df.columns[i] for i in range(1, len(df.columns)) if i % 6 in [1, 2, 3]]  # derive st-i columns names
     bf_df = pd.DataFrame(data=None, index=new_columns, columns=new_columns)  # empty df for Brown-Forsythe p-values
 
@@ -74,12 +87,13 @@ def brown_forsythe(path, dig):
 
 
 # function for computation of confidence intervals with bootstrap method
-def bootstrap(path, moment, iterations, dig):
-    df = pd.read_csv(path, sep='\t')
-    params = [df.columns[i].split('_')[0] for i in range(1, df.shape[1], 6)]  # derive parameters names
-    resids = [df.columns[i].split('_')[1] for i in range(1, 7)][0:3]  # derive residuals names and filter first three
-    bs_df = pd.DataFrame(data=None, index=params, columns=resids)  # empty dataframe for variances
+def bootstrap(path, moment, iterations, dig, type):
 
+    # dataframe loading
+    df, params, resids, bs_df = df_load(path, 'df'), df_load(path, 'params'), \
+                                 df_load(path, 'resids'), df_load(path, 'new_df')
+
+    # dataframe filling
     for p in params:
         for r in resids:
             col = df[p + '_' + r]
@@ -90,20 +104,63 @@ def bootstrap(path, moment, iterations, dig):
                     bs_moments.append(np.mean(smpl))
                 elif moment == 'sd':
                     bs_moments.append(np.std(smpl))
+                elif moment == 'loa':  # single limit of agreement
+                    bs_moments.append(np.std(smpl) * 1.96)
                 else:
-                    print('please enter the allowable stat measure: mean or sd')
+                    print('please enter the allowable stat measure: mean, sd or loa')
                     break
 
             # histograms plotting for all parameters
             plt.hist(bs_moments)
-            plt.savefig(p + '_' + r + '_' + moment + '_hist.png')
+            #plt.savefig(p + '_' + r + '_' + moment + '_hist.png')
             plt.clf()
 
+            # multiple hypothesis adjust
+            adj_per = round(2.5 / (len(params) * len(resids)), 3)
+
             # dataframe with means and adjusted for 24 multiple hypotheses percentilles
-            bs_df[r][p] = str(round(np.mean(bs_moments), dig)) + '(CI95 ' + \
-                          str(round(np.percentile(bs_moments, 0.104), dig)) + '–' +\
-                          str(round(np.percentile(bs_moments, 99.896), dig)) + ')'
+            if type == 'txt':
+                bs_df[r][p] = str(round(np.mean(bs_moments), dig)) + '(CI95 ' + \
+                          str(round(np.percentile(bs_moments, adj_per), dig)) + '–' +\
+                          str(round(np.percentile(bs_moments, 100 - adj_per), dig)) + ')'
+            elif type == 'num':
+                bs_df[r][p] = [round(np.mean(bs_moments), dig),
+                               round(np.percentile(bs_moments, adj_per), dig),
+                               round(np.percentile(bs_moments, 100 - adj_per), dig)]
     return bs_df
+
+
+# function for limits of agreement computation
+def loas(mean_df, loa_df, dig):
+    loas_df = pd.DataFrame(data=None, index=mean_df.index, columns=mean_df.columns)
+    for i in mean_df.index:
+        for c in mean_df.columns:
+            loas_df[c][i] = str(round(mean_df[c][i][0] - loa_df[c][i][2], dig)) + '–' + \
+                            str(round(mean_df[c][i][0] + loa_df[c][i][2], dig))
+    return loas_df
+
+
+# difference plotting
+def boxplot(path):
+    sns.set_theme(style="ticks")
+    f, ax = plt.subplots(figsize=(7, 6))  # Initialize the figure with a logarithmic x axis
+    df, params, resids = df_load(path, 'df'), df_load(path, 'params'), \
+                                df_load(path, 'resids')
+    param_list = [df.columns[i] for i in range(1, len(df.columns)) if i % 6 in [1, 2, 3]]
+
+    # Plot the orbital period with horizontal boxes
+    sns.boxplot(data=df[param_list], orient='h', dodge=False,
+                whis=[2.5, 97.5], width=.6, palette="vlag")
+
+    # Add in points to show each observation
+    sns.stripplot(data=df[param_list], orient='h',
+                  size=4, color=".3", linewidth=0)
+
+    # Tweak the visual presentation
+    ax.xaxis.grid(True)
+    ax.set(ylabel="")
+    sns.despine(trim=True, left=True)
+    plt.show()
 
 
 folder = 'C:/Kotomin/Globalall/Methionine_dyn/01_Intervals/csv/'
@@ -111,20 +168,29 @@ file1 = 'residuals.csv'
 file2 = 'relative_residuals.csv'
 
 # classical nonparametric estimation of variability
+
 # res_mad_df, res_bf_df = mad(folder + file1, 3), brown_forsythe(folder + file1, 5)
 # rel_res_mad_df, rel_res_bf_df = mad(folder + file2, 1), brown_forsythe(folder + file2, 5)
 
 # bootstrap estimation of bias and variability
-res_ci95_df, res_sd_ci95_df = bootstrap(folder + file1, 'mean', 5000, 2), bootstrap(folder + file1, 'sd', 5000, 2)
-rel_res_ci95_df, rel_res_sd_ci95_df = bootstrap(folder + file2, 'mean', 5000, 1), \
-                                      bootstrap(folder + file2, 'sd', 5000, 1)
+
+res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
+                               bootstrap(folder + file1, 'loa', 1000, 2, 'num')
+res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
+rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
+                                       bootstrap(folder + file2, 'loa', 1000, 1, 'num')
+rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
 
 # output block
+
 # res_mad_df.to_csv('residuals_mad.csv', sep='\t')
 # rel_res_mad_df.to_csv('rel_residuals_mad.csv', sep='\t')
 # res_bf_df.to_csv('residuals_bf.csv', sep='\t')
 # rel_res_bf_df.to_csv('rel_residuals_bf.csv', sep='\t')
-res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')
-rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')
-res_sd_ci95_df.to_csv('residuals_sd.csv', sep='\t')
-rel_res_sd_ci95_df.to_csv('rel_residuals_sd.csv', sep='\t')
+# res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')
+# rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')
+# res_sd_ci95_df.to_csv('residuals_sd.csv', sep='\t')
+# rel_res_sd_ci95_df.to_csv('rel_residuals_sd.csv', sep='\t')
+res_loas_df.to_csv('residuals_LoA.csv', sep='\t')
+rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')
+# plot = boxplot(folder + file2) !NOT READY

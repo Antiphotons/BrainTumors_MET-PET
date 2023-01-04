@@ -84,11 +84,60 @@ def voi_separation(lesion_number, voi_df):
         voi_df_nw.to_csv(voi_name, sep='\t')
 
 
-# VOI info load in dataframe
-path_to_vois_folder = 'C:/Kotomin/Globalall/Methionine_dyn/02_TAC/VOI_TACs/'
+def tbr_curve_gen(path, lesion_number):
 
-for i in range(93, 99):
+    # checking if a lesion_Norma.csv file exists & generate normal curve df
+
+    if os.path.exists(path + lesion_number + '_Norma.csv'):
+        norma_df = pd.read_csv(path + lesion_number + '_Norma.csv', sep='\t')
+
+        # TBR curve dataframes generation
+        # spherical VOI
+        # checking if a lesion_voi.csv file exists & tbr curve df generation
+        if os.path.exists(path + lesion_number + '_Max_uptake_sphere.csv'):
+            voi_df = pd.read_csv(path + lesion_number + '_Max_uptake_sphere.csv', sep='\t')
+            tbr_max_df, tbr_mean_df = voi_df.loc[:, ['Series', 'VOI', 'Maximum']], \
+                                      voi_df.loc[:, ['Series', 'VOI', 'Mean']]
+            tbr_max_df['Maximum'] = round(voi_df['Maximum'] / norma_df['Mean'], 2)
+            tbr_mean_df['Mean'] = round(voi_df['Mean'] / norma_df['Mean'], 2)
+
+            # save TBRmax curve
+            print(lesion_number + '_TBRmax_sphere')
+            tbr_max_df.to_csv(lesion_number + '_TBRmax_sphere.csv', sep='\t')
+
+            # save TBRmean curve
+            print(lesion_number + '_TBRmean_sphere')
+            tbr_mean_df.to_csv(lesion_number + '_TBRmean_sphere.csv', sep='\t')
+
+        else:
+            print('path to lesion spherical VOI is not exists')
+
+        # circle VOI
+        # checking if a lesion_voi.csv file exists & tbr curve df generation
+        if os.path.exists(path + lesion_number + '_Max_uptake_circle.csv'):
+            voi_df = pd.read_csv(path + lesion_number + '_Max_uptake_circle.csv', sep='\t')
+            tbr_10_df = voi_df.loc[:, ['Series', 'VOI', 'Mean']]
+            tbr_10_df['Mean'] = round(tbr_10_df['Mean'] / norma_df['Mean'], 2)
+
+            # save TBRmean curve
+            print(lesion_number + '_TBRmean_circle')
+            tbr_10_df.to_csv(lesion_number + '_TBRmean_circle.csv', sep='\t')
+        else:
+            print('path to lesion circle VOI is not exists')
+
+    else:
+        print('path to Norma VOI is not exists')
+
+
+# VOI info load in dataframe
+path_to_vois_folder = 'C:/PycharmProjects/Table_processer/Output/'
+
+for i in range(88, 99):
     lesion_num = "{0:0=3d}".format(i + 1)
     if os.path.exists(path_to_vois_folder + lesion_num + '.csv'):  # checking if a lesion .csv file exists
-        voi_df_unsort = voi_loader(path_to_vois_folder, lesion_num)
-        voi_separation(lesion_num, voi_df_unsort)
+        # voi_df_unsort = voi_loader(path_to_vois_folder, lesion_num)
+        # voi_separation(lesion_num, voi_df_unsort)
+        tbr_curve_gen(path_to_vois_folder, lesion_num)
+    else:
+        print('unreacheble destination')
+        # break

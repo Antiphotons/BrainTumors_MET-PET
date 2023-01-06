@@ -28,7 +28,7 @@ def curve_loader(folder_path, file_name, measure_type):
     else:
         print('error: check dynamic curve length')
     tac_dataframe = pd.DataFrame({
-        measure_type: voi_dataframe[measure_type],  # type of activity value (mean, max, or peak)
+        measure_type: voi_dataframe[measure_type],  # type of activity value (mean, max, peak or TBR)
         'Time': times  # time points
     })  # finalisation of curve dataframe
     return tac_dataframe
@@ -84,7 +84,10 @@ def tac_plot(tac_df, filename, measure_type):
     plt.figure(figsize=(12, 4))
     plt.plot(time, activity, time[late_phase:], reg_line[late_phase:], 'r--')
     plt.xlabel('Time (sec)')
-    plt.ylabel(measure_type + ' (SUVbw)')
+    if measure_type in ['Mean', 'Maximum', 'Peak']:
+        plt.ylabel('SUVbw ' + measure_type)
+    else:
+        plt.ylabel(measure_type)
     plt.savefig(filename + '_' + measure_type.lower() + '.png')
 
 
@@ -93,38 +96,32 @@ def tac_stat(tac_df, measure_type):
     tac_max = max(tac_df[measure_type])  # maximal SUV on curve
     tac_max_ep = max(tac_df[tac_df.Time < 600][measure_type])  # maximum in early phase (0-10 min)
     tac_max_lp = max(tac_df[tac_df.Time >= 600][measure_type])  # maximum in late phase (>10 min)
-    t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV
+    t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV or TBR
     t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
     b1 = slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type])  # slope
-    tac_char = [tac_max, t_max, t_max_lp, tac_max_ep / t_max_ep * 3600, b1 * 3600]  # string of TAC characteristics
+    # string of TAC characteristics
+    tac_char = [tac_max, t_max, t_max_lp, round(tac_max_ep / t_max_ep * 3600, 2), round(b1 * 3600, 4)]
     return tac_char
 
 
-folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
+folder = 'C:/PycharmProjects/Table_processer/Output/'
 
-for roi in ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
-    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
+for roi in ['Max_uptake_circle', 'Max_uptake_sphere', 'Norma']:  # ROI types
+    for meas in ['Mean', 'Maximum', 'TBR_Mean', 'TBR_Maximum']:  # measure types
+        if roi == 'Max_uptake_circle' and meas in ['Maximum', 'TBR_Maximum']:  # skip nonexistent data
+            continue
+        elif roi == 'Norma' and meas not in ['Mean']:
+            continue
 
-    for i in range(72, 99):  # number of lesions in working directory
-        file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
-        file_with_ext = file + '.csv'  # filename with extension for a file opening
-        if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
-            tac = curve_loader(folder, file_with_ext, 'Mean')  # tac dataframe load
-            tac = tac_smoother(tac, 'Mean')  # transform 70-frame-TACs
-            tac_plot(tac, file, 'Mean')  # tac plot draw
-            roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Mean')  # addition TAC statistics to table
-    roi_tbl.to_csv(roi + '_mean.csv', sep='\t')
-
-for roi in ['Max_uptake_sphere']:  # ROI types
-    roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
-
-    for i in range(72, 99):  # number of lesions in working directory
-        file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
-        file_with_ext = file + '.csv'  # filename with extension for a file opening
-        if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
-            tac = curve_loader(folder, file_with_ext, 'Maximum')  # tac dataframe load
-            tac = tac_smoother(tac, 'Maximum')  # transform 70-frame-TACs
-            tac_plot(tac, file, 'Maximum')  # tac plot draw
-            roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, 'Maximum')  # addition TAC statistics to table
-    roi_tbl.to_csv(roi + '_maximum.csv', sep='\t')
+        roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
+        for i in range(0, 99):  # number of lesions in working directory
+            file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
+            file_with_ext = file + '.csv'  # filename with extension for a file opening
+            if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
+                print(file + ' - ' + meas)
+                tac = curve_loader(folder, file_with_ext, meas)  # tac dataframe load
+                tac = tac_smoother(tac, meas)  # transform 70-frame-TACs
+                tac_plot(tac, file, meas)  # tac plot draw
+                # roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas)  # addition TAC statistics to table
+        # roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')

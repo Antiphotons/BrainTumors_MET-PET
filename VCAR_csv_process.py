@@ -1,5 +1,6 @@
 import pandas as pd
 import os.path
+from math import inf
 
 
 # function for load information from csv with VOI info
@@ -91,40 +92,27 @@ def tbr_curve_gen(path, lesion_number):
     if os.path.exists(path + lesion_number + '_Norma.csv'):
         norma_df = pd.read_csv(path + lesion_number + '_Norma.csv', sep='\t')
 
-        # TBR curve dataframes generation
-        # spherical VOI
-        # checking if a lesion_voi.csv file exists & tbr curve df generation
-        if os.path.exists(path + lesion_number + '_Max_uptake_sphere.csv'):
-            voi_df = pd.read_csv(path + lesion_number + '_Max_uptake_sphere.csv', sep='\t')
-            tbr_max_df, tbr_mean_df = voi_df.loc[:, ['Series', 'VOI', 'Maximum']], \
-                                      voi_df.loc[:, ['Series', 'VOI', 'Mean']]
-            tbr_max_df['Maximum'] = round(voi_df['Maximum'] / norma_df['Mean'], 2)
-            tbr_mean_df['Mean'] = round(voi_df['Mean'] / norma_df['Mean'], 2)
+        # generate TBR curve in VOI dataframes
+        for v in ['_Max_uptake_sphere.csv', '_Max_uptake_circle.csv']:  # spherical or circle voi
+            if os.path.exists(path + lesion_number + v):  # check if a lesion_voi.csv file exists
+                voi_df = pd.read_csv(path + lesion_number + v, sep='\t')  # extract VOI dataframe
+                del voi_df['Unnamed: 0']
+                for m in ['Mean', 'Maximum']:  # measure type
+                    if v == '_Max_uptake_circle.csv' and m == 'Maximum':  # exclude circle maximum (optional)
+                        continue
+                    voi_df['TBR_' + m] = round(voi_df[m] / norma_df['Mean'], 2)
 
-            # save TBRmax curve
-            print(lesion_number + '_TBRmax_sphere')
-            tbr_max_df.to_csv(lesion_number + '_TBRmax_sphere.csv', sep='\t')
+                    # change infinite TBR values to zero (since this is the result of zero SUV in normal VOI)
+                    for i in range(len(voi_df['Series'])):
+                        if voi_df['TBR_' + m][i] == inf:
+                            voi_df.loc[i, ['TBR_' + m]] = 0
+                    print(lesion_number + v + ' - TBR_' + m)
 
-            # save TBRmean curve
-            print(lesion_number + '_TBRmean_sphere')
-            tbr_mean_df.to_csv(lesion_number + '_TBRmean_sphere.csv', sep='\t')
+                # save updated lesion_voi.csv with TBR columns
+                voi_df.to_csv(lesion_number + v, sep='\t')
 
-        else:
-            print('path to lesion spherical VOI is not exists')
-
-        # circle VOI
-        # checking if a lesion_voi.csv file exists & tbr curve df generation
-        if os.path.exists(path + lesion_number + '_Max_uptake_circle.csv'):
-            voi_df = pd.read_csv(path + lesion_number + '_Max_uptake_circle.csv', sep='\t')
-            tbr_10_df = voi_df.loc[:, ['Series', 'VOI', 'Mean']]
-            tbr_10_df['Mean'] = round(tbr_10_df['Mean'] / norma_df['Mean'], 2)
-
-            # save TBRmean curve
-            print(lesion_number + '_TBRmean_circle')
-            tbr_10_df.to_csv(lesion_number + '_TBRmean_circle.csv', sep='\t')
-        else:
-            print('path to lesion circle VOI is not exists')
-
+            else:
+                print('path to lesion VOI is not exists')
     else:
         print('path to Norma VOI is not exists')
 
@@ -132,12 +120,12 @@ def tbr_curve_gen(path, lesion_number):
 # VOI info load in dataframe
 path_to_vois_folder = 'C:/PycharmProjects/Table_processer/Output/'
 
-for i in range(88, 99):
+for i in range(84, 85):
     lesion_num = "{0:0=3d}".format(i + 1)
     if os.path.exists(path_to_vois_folder + lesion_num + '.csv'):  # checking if a lesion .csv file exists
         # voi_df_unsort = voi_loader(path_to_vois_folder, lesion_num)
         # voi_separation(lesion_num, voi_df_unsort)
         tbr_curve_gen(path_to_vois_folder, lesion_num)
     else:
-        print('unreacheble destination')
+        print(lesion_num + '.csv unreacheble destination')
         # break

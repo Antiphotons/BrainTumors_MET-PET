@@ -1,5 +1,6 @@
 #import os.path
 import pandas as pd
+from math import inf
 #import matplotlib.pyplot as plt
 #import numpy as np
 #from scipy.stats import levene
@@ -7,11 +8,17 @@ import pandas as pd
 #import seaborn as sns
 
 path_to_vois_folder = 'C:/PycharmProjects/Table_processer/Output/'
-df = pd.read_csv(path_to_vois_folder + '001_Norma.csv', sep='\t')
-copy_df = df.copy()
-new_df = df.loc[:, ['Mean', 'VOI']]
-copy_df['Halfmean'] = copy_df.Mean / 2
+m = 'dich'
+df = pd.read_csv(path_to_vois_folder + '020_Norma.csv', sep='\t')
+del df['Unnamed: 0']
+curve = pd.DataFrame()
+curve['Mean'] = df.Mean[1:]
+curve.reset_index()
+curve['Time'] = df.index[1:] * 10
+curve.loc[25, ['Mean']] = 1.37
+m = max(curve['Mean'])
+t_m = curve.Time[curve.Mean[curve.Mean == m].index[0]]
 
-new_df['Dobblemean'] = new_df['Mean'] / copy_df['Halfmean']
-
-print(new_df)
+print(curve)
+print()
+print(t_m)

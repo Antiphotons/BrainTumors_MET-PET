@@ -1,72 +1,72 @@
-	Series	VOI	Maximum	Mean	Peak
-0	PET - 10-30	ROI 5 - Sphere	4.41	3.33	3.52
-1	PET - Dynamic Vol 1 - frame 1 (0s)	ROI 5 - Sphere	4.12	1.87	1.91
-2	PET - Dynamic Vol 2 - frame 2 (15s)	ROI 5 - Sphere	5.62	2.4	2.52
-3	PET - Dynamic Vol 3 - frame 3 (30s)	ROI 5 - Sphere	6.44	2.9	3.14
-4	PET - Dynamic Vol 4 - frame 4 (45s)	ROI 5 - Sphere	5.31	2.08	2.05
-5	PET - Dynamic Vol 5 - frame 5 (60s)	ROI 5 - Sphere	6.8	2.74	2.94
-6	PET - Dynamic Vol 6 - frame 6 (75s)	ROI 5 - Sphere	5.83	2.81	2.96
-7	PET - Dynamic Vol 7 - frame 7 (90s)	ROI 5 - Sphere	6.17	2.96	3.16
-8	PET - Dynamic Vol 8 - frame 8 (105s)	ROI 5 - Sphere	7.5	2.91	3.22
-9	PET - Dynamic Vol 9 - frame 9 (120s)	ROI 5 - Sphere	6.59	2.37	2.53
-10	PET - Dynamic Vol 10 - frame 10 (135s)	ROI 5 - Sphere	7.44	2.96	3.2
-11	PET - Dynamic Vol 11 - frame 11 (150s)	ROI 5 - Sphere	7.08	3.03	3.09
-12	PET - Dynamic Vol 12 - frame 12 (165s)	ROI 5 - Sphere	7.38	2.94	3.21
-13	PET - Dynamic Vol 13 - frame 13 (180s)	ROI 5 - Sphere	6.23	2.77	3.03
-14	PET - Dynamic Vol 14 - frame 14 (195s)	ROI 5 - Sphere	6.59	2.92	3.06
-15	PET - Dynamic Vol 15 - frame 15 (210s)	ROI 5 - Sphere	6.63	3.41	3.66
-16	PET - Dynamic Vol 16 - frame 16 (225s)	ROI 5 - Sphere	7.11	3.34	3.52
-17	PET - Dynamic Vol 17 - frame 17 (240s)	ROI 5 - Sphere	5.73	2.98	3.09
-18	PET - Dynamic Vol 18 - frame 18 (255s)	ROI 5 - Sphere	7.37	3.08	3.22
-19	PET - Dynamic Vol 19 - frame 19 (270s)	ROI 5 - Sphere	6.03	3.16	3.33
-20	PET - Dynamic Vol 20 - frame 20 (285s)	ROI 5 - Sphere	6.23	2.79	2.87
-21	PET - Dynamic Vol 21 - frame 21 (300s)	ROI 5 - Sphere	7.23	3.77	4.05
-22	PET - Dynamic Vol 22 - frame 22 (315s)	ROI 5 - Sphere	5.25	2.59	2.77
-23	PET - Dynamic Vol 23 - frame 23 (330s)	ROI 5 - Sphere	7.72	3.63	3.91
-24	PET - Dynamic Vol 24 - frame 24 (345s)	ROI 5 - Sphere	5.49	2.77	3.0
-25	PET - Dynamic Vol 25 - frame 25 (360s)	ROI 5 - Sphere	6.02	3.53	3.87
-26	PET - Dynamic Vol 26 - frame 26 (375s)	ROI 5 - Sphere	6.73	3.4	3.57
-27	PET - Dynamic Vol 27 - frame 27 (390s)	ROI 5 - Sphere	6.52	3.18	3.28
-28	PET - Dynamic Vol 28 - frame 28 (405s)	ROI 5 - Sphere	6.95	3.35	3.6
-29	PET - Dynamic Vol 29 - frame 29 (420s)	ROI 5 - Sphere	8.85	3.9	4.14
-30	PET - Dynamic Vol 30 - frame 30 (435s)	ROI 5 - Sphere	6.71	2.97	3.09
-31	PET - Dynamic Vol 31 - frame 31 (450s)	ROI 5 - Sphere	8.51	3.3	3.4
-32	PET - Dynamic Vol 32 - frame 32 (465s)	ROI 5 - Sphere	7.41	3.29	3.58
-33	PET - Dynamic Vol 33 - frame 33 (480s)	ROI 5 - Sphere	7.51	3.01	3.16
-34	PET - Dynamic Vol 34 - frame 34 (495s)	ROI 5 - Sphere	7.83	3.74	4.17
-35	PET - Dynamic Vol 35 - frame 35 (510s)	ROI 5 - Sphere	7.31	3.63	3.9
-36	PET - Dynamic Vol 36 - frame 36 (525s)	ROI 5 - Sphere	6.51	3.07	3.17
-37	PET - Dynamic Vol 37 - frame 37 (540s)	ROI 5 - Sphere	7.61	3.26	3.39
-38	PET - Dynamic Vol 38 - frame 38 (555s)	ROI 5 - Sphere	9.16	4.4	4.89
-39	PET - Dynamic Vol 39 - frame 39 (570s)	ROI 5 - Sphere	7.35	3.15	3.19
-40	PET - Dynamic Vol 40 - frame 40 (585s)	ROI 5 - Sphere	6.03	3.05	3.25
-41	PET - Dynamic Vol 41 - frame 41 (600s)	ROI 5 - Sphere	6.09	3.27	3.4
-42	PET - Dynamic Vol 42 - frame 42 (630s)	ROI 5 - Sphere	5.76	3.08	3.24
-43	PET - Dynamic Vol 43 - frame 43 (660s)	ROI 5 - Sphere	5.9	3.46	3.74
-44	PET - Dynamic Vol 44 - frame 44 (690s)	ROI 5 - Sphere	5.73	3.04	3.24
-45	PET - Dynamic Vol 45 - frame 45 (720s)	ROI 5 - Sphere	6.42	3.49	3.68
-46	PET - Dynamic Vol 46 - frame 46 (750s)	ROI 5 - Sphere	4.53	2.84	2.92
-47	PET - Dynamic Vol 47 - frame 47 (780s)	ROI 5 - Sphere	8.06	3.31	3.45
-48	PET - Dynamic Vol 48 - frame 48 (810s)	ROI 5 - Sphere	6.86	3.19	3.15
-49	PET - Dynamic Vol 49 - frame 49 (840s)	ROI 5 - Sphere	7.49	3.41	3.55
-50	PET - Dynamic Vol 50 - frame 50 (870s)	ROI 5 - Sphere	6.88	3.48	3.74
-51	PET - Dynamic Vol 51 - frame 51 (900s)	ROI 5 - Sphere	7.49	3.65	3.77
-52	PET - Dynamic Vol 52 - frame 52 (930s)	ROI 5 - Sphere	9.02	3.6	3.86
-53	PET - Dynamic Vol 53 - frame 53 (960s)	ROI 5 - Sphere	5.93	3.12	3.21
-54	PET - Dynamic Vol 54 - frame 54 (990s)	ROI 5 - Sphere	6.21	3.76	3.87
-55	PET - Dynamic Vol 55 - frame 55 (1020s)	ROI 5 - Sphere	7.84	3.26	3.4
-56	PET - Dynamic Vol 56 - frame 56 (1050s)	ROI 5 - Sphere	8.64	3.49	3.85
-57	PET - Dynamic Vol 57 - frame 57 (1080s)	ROI 5 - Sphere	7.21	3.6	3.91
-58	PET - Dynamic Vol 58 - frame 58 (1110s)	ROI 5 - Sphere	5.35	2.76	2.86
-59	PET - Dynamic Vol 59 - frame 59 (1140s)	ROI 5 - Sphere	7.36	3.31	3.52
-60	PET - Dynamic Vol 60 - frame 60 (1170s)	ROI 5 - Sphere	6.48	3.6	3.85
-61	PET - Dynamic Vol 61 - frame 61 (1200s)	ROI 5 - Sphere	4.83	3.29	3.49
-62	PET - Dynamic Vol 62 - frame 62 (1320s)	ROI 5 - Sphere	5.68	3.61	3.88
-63	PET - Dynamic Vol 63 - frame 63 (1440s)	ROI 5 - Sphere	5.04	3.27	3.39
-64	PET - Dynamic Vol 64 - frame 64 (1560s)	ROI 5 - Sphere	5.11	3.19	3.4
-65	PET - Dynamic Vol 65 - frame 65 (1680s)	ROI 5 - Sphere	5.92	3.3	3.48
-66	PET - Dynamic Vol 66 - frame 66 (1800s)	ROI 5 - Sphere	5.48	3.29	3.48
-67	PET - Dynamic Vol 67 - frame 67 (1920s)	ROI 5 - Sphere	5.07	2.94	3.12
-68	PET - Dynamic Vol 68 - frame 68 (2040s)	ROI 5 - Sphere	4.42	2.79	2.84
-69	PET - Dynamic Vol 69 - frame 69 (2160s)	ROI 5 - Sphere	5.17	2.98	3.13
-70	PET - Dynamic Vol 70 - frame 70 (2280s)	ROI 5 - Sphere	4.95	2.97	3.08
+	Series	VOI	Maximum	Mean	Peak	TBR_Mean	TBR_Maximum
+0	PET - 10-30	ROI 5 - Sphere	4.41	3.33	3.52	2.6	3.45
+1	PET - Dynamic Vol 1 - frame 1 (0s)	ROI 5 - Sphere	4.12	1.87	1.91	1.99	4.38
+2	PET - Dynamic Vol 2 - frame 2 (15s)	ROI 5 - Sphere	5.62	2.4	2.52	2.5	5.85
+3	PET - Dynamic Vol 3 - frame 3 (30s)	ROI 5 - Sphere	6.44	2.9	3.14	2.84	6.31
+4	PET - Dynamic Vol 4 - frame 4 (45s)	ROI 5 - Sphere	5.31	2.08	2.05	2.14	5.47
+5	PET - Dynamic Vol 5 - frame 5 (60s)	ROI 5 - Sphere	6.8	2.74	2.94	2.69	6.67
+6	PET - Dynamic Vol 6 - frame 6 (75s)	ROI 5 - Sphere	5.83	2.81	2.96	2.87	5.95
+7	PET - Dynamic Vol 7 - frame 7 (90s)	ROI 5 - Sphere	6.17	2.96	3.16	2.79	5.82
+8	PET - Dynamic Vol 8 - frame 8 (105s)	ROI 5 - Sphere	7.5	2.91	3.22	2.72	7.01
+9	PET - Dynamic Vol 9 - frame 9 (120s)	ROI 5 - Sphere	6.59	2.37	2.53	2.24	6.22
+10	PET - Dynamic Vol 10 - frame 10 (135s)	ROI 5 - Sphere	7.44	2.96	3.2	2.9	7.29
+11	PET - Dynamic Vol 11 - frame 11 (150s)	ROI 5 - Sphere	7.08	3.03	3.09	2.71	6.32
+12	PET - Dynamic Vol 12 - frame 12 (165s)	ROI 5 - Sphere	7.38	2.94	3.21	2.97	7.45
+13	PET - Dynamic Vol 13 - frame 13 (180s)	ROI 5 - Sphere	6.23	2.77	3.03	2.59	5.82
+14	PET - Dynamic Vol 14 - frame 14 (195s)	ROI 5 - Sphere	6.59	2.92	3.06	2.63	5.94
+15	PET - Dynamic Vol 15 - frame 15 (210s)	ROI 5 - Sphere	6.63	3.41	3.66	2.99	5.82
+16	PET - Dynamic Vol 16 - frame 16 (225s)	ROI 5 - Sphere	7.11	3.34	3.52	3.01	6.41
+17	PET - Dynamic Vol 17 - frame 17 (240s)	ROI 5 - Sphere	5.73	2.98	3.09	2.5	4.82
+18	PET - Dynamic Vol 18 - frame 18 (255s)	ROI 5 - Sphere	7.37	3.08	3.22	3.05	7.3
+19	PET - Dynamic Vol 19 - frame 19 (270s)	ROI 5 - Sphere	6.03	3.16	3.33	2.51	4.79
+20	PET - Dynamic Vol 20 - frame 20 (285s)	ROI 5 - Sphere	6.23	2.79	2.87	2.33	5.19
+21	PET - Dynamic Vol 21 - frame 21 (300s)	ROI 5 - Sphere	7.23	3.77	4.05	3.07	5.88
+22	PET - Dynamic Vol 22 - frame 22 (315s)	ROI 5 - Sphere	5.25	2.59	2.77	2.25	4.57
+23	PET - Dynamic Vol 23 - frame 23 (330s)	ROI 5 - Sphere	7.72	3.63	3.91	3.24	6.89
+24	PET - Dynamic Vol 24 - frame 24 (345s)	ROI 5 - Sphere	5.49	2.77	3.0	2.25	4.46
+25	PET - Dynamic Vol 25 - frame 25 (360s)	ROI 5 - Sphere	6.02	3.53	3.87	3.04	5.19
+26	PET - Dynamic Vol 26 - frame 26 (375s)	ROI 5 - Sphere	6.73	3.4	3.57	2.91	5.75
+27	PET - Dynamic Vol 27 - frame 27 (390s)	ROI 5 - Sphere	6.52	3.18	3.28	2.69	5.53
+28	PET - Dynamic Vol 28 - frame 28 (405s)	ROI 5 - Sphere	6.95	3.35	3.6	2.96	6.15
+29	PET - Dynamic Vol 29 - frame 29 (420s)	ROI 5 - Sphere	8.85	3.9	4.14	3.25	7.38
+30	PET - Dynamic Vol 30 - frame 30 (435s)	ROI 5 - Sphere	6.71	2.97	3.09	2.52	5.69
+31	PET - Dynamic Vol 31 - frame 31 (450s)	ROI 5 - Sphere	8.51	3.3	3.4	2.95	7.6
+32	PET - Dynamic Vol 32 - frame 32 (465s)	ROI 5 - Sphere	7.41	3.29	3.58	2.67	6.02
+33	PET - Dynamic Vol 33 - frame 33 (480s)	ROI 5 - Sphere	7.51	3.01	3.16	2.26	5.65
+34	PET - Dynamic Vol 34 - frame 34 (495s)	ROI 5 - Sphere	7.83	3.74	4.17	3.78	7.91
+35	PET - Dynamic Vol 35 - frame 35 (510s)	ROI 5 - Sphere	7.31	3.63	3.9	3.24	6.53
+36	PET - Dynamic Vol 36 - frame 36 (525s)	ROI 5 - Sphere	6.51	3.07	3.17	2.79	5.92
+37	PET - Dynamic Vol 37 - frame 37 (540s)	ROI 5 - Sphere	7.61	3.26	3.39	2.83	6.62
+38	PET - Dynamic Vol 38 - frame 38 (555s)	ROI 5 - Sphere	9.16	4.4	4.89	4.11	8.56
+39	PET - Dynamic Vol 39 - frame 39 (570s)	ROI 5 - Sphere	7.35	3.15	3.19	2.3	5.36
+40	PET - Dynamic Vol 40 - frame 40 (585s)	ROI 5 - Sphere	6.03	3.05	3.25	2.42	4.79
+41	PET - Dynamic Vol 41 - frame 41 (600s)	ROI 5 - Sphere	6.09	3.27	3.4	2.57	4.8
+42	PET - Dynamic Vol 42 - frame 42 (630s)	ROI 5 - Sphere	5.76	3.08	3.24	2.68	5.01
+43	PET - Dynamic Vol 43 - frame 43 (660s)	ROI 5 - Sphere	5.9	3.46	3.74	2.88	4.92
+44	PET - Dynamic Vol 44 - frame 44 (690s)	ROI 5 - Sphere	5.73	3.04	3.24	2.47	4.66
+45	PET - Dynamic Vol 45 - frame 45 (720s)	ROI 5 - Sphere	6.42	3.49	3.68	2.77	5.1
+46	PET - Dynamic Vol 46 - frame 46 (750s)	ROI 5 - Sphere	4.53	2.84	2.92	2.18	3.48
+47	PET - Dynamic Vol 47 - frame 47 (780s)	ROI 5 - Sphere	8.06	3.31	3.45	2.53	6.15
+48	PET - Dynamic Vol 48 - frame 48 (810s)	ROI 5 - Sphere	6.86	3.19	3.15	2.7	5.81
+49	PET - Dynamic Vol 49 - frame 49 (840s)	ROI 5 - Sphere	7.49	3.41	3.55	2.66	5.85
+50	PET - Dynamic Vol 50 - frame 50 (870s)	ROI 5 - Sphere	6.88	3.48	3.74	2.66	5.25
+51	PET - Dynamic Vol 51 - frame 51 (900s)	ROI 5 - Sphere	7.49	3.65	3.77	3.09	6.35
+52	PET - Dynamic Vol 52 - frame 52 (930s)	ROI 5 - Sphere	9.02	3.6	3.86	3.05	7.64
+53	PET - Dynamic Vol 53 - frame 53 (960s)	ROI 5 - Sphere	5.93	3.12	3.21	2.46	4.67
+54	PET - Dynamic Vol 54 - frame 54 (990s)	ROI 5 - Sphere	6.21	3.76	3.87	3.01	4.97
+55	PET - Dynamic Vol 55 - frame 55 (1020s)	ROI 5 - Sphere	7.84	3.26	3.4	2.38	5.72
+56	PET - Dynamic Vol 56 - frame 56 (1050s)	ROI 5 - Sphere	8.64	3.49	3.85	2.86	7.08
+57	PET - Dynamic Vol 57 - frame 57 (1080s)	ROI 5 - Sphere	7.21	3.6	3.91	3.1	6.22
+58	PET - Dynamic Vol 58 - frame 58 (1110s)	ROI 5 - Sphere	5.35	2.76	2.86	1.92	3.72
+59	PET - Dynamic Vol 59 - frame 59 (1140s)	ROI 5 - Sphere	7.36	3.31	3.52	2.69	5.98
+60	PET - Dynamic Vol 60 - frame 60 (1170s)	ROI 5 - Sphere	6.48	3.6	3.85	2.88	5.18
+61	PET - Dynamic Vol 61 - frame 61 (1200s)	ROI 5 - Sphere	4.83	3.29	3.49	2.57	3.77
+62	PET - Dynamic Vol 62 - frame 62 (1320s)	ROI 5 - Sphere	5.68	3.61	3.88	2.76	4.34
+63	PET - Dynamic Vol 63 - frame 63 (1440s)	ROI 5 - Sphere	5.04	3.27	3.39	2.53	3.91
+64	PET - Dynamic Vol 64 - frame 64 (1560s)	ROI 5 - Sphere	5.11	3.19	3.4	2.42	3.87
+65	PET - Dynamic Vol 65 - frame 65 (1680s)	ROI 5 - Sphere	5.92	3.3	3.48	2.56	4.59
+66	PET - Dynamic Vol 66 - frame 66 (1800s)	ROI 5 - Sphere	5.48	3.29	3.48	2.53	4.22
+67	PET - Dynamic Vol 67 - frame 67 (1920s)	ROI 5 - Sphere	5.07	2.94	3.12	2.24	3.87
+68	PET - Dynamic Vol 68 - frame 68 (2040s)	ROI 5 - Sphere	4.42	2.79	2.84	2.21	3.51
+69	PET - Dynamic Vol 69 - frame 69 (2160s)	ROI 5 - Sphere	5.17	2.98	3.13	2.35	4.07
+70	PET - Dynamic Vol 70 - frame 70 (2280s)	ROI 5 - Sphere	4.95	2.97	3.08	2.48	4.12

@@ -1,7 +1,7 @@
 import os.path
 import pandas as pd
 import matplotlib.pyplot as plt
-import math as m
+import matplotlib.ticker as ticker
 
 
 # function for transform VOI file to curve dataframe
@@ -65,6 +65,21 @@ def tac_smoother(tac_df, measure_type):
     return tac_df
 
 
+# function for addition to TAC first frame with zero value and shift times to the frame center
+def tac_conditioner(tac_df, measure_type):
+
+    # shift times to the center of the correspondent frames
+    last_timepoint = (tac_df.Time[len(tac_df.Time) - 1] * 3 - tac_df.Time[len(tac_df.Time) - 2]) / 2
+    for i in range(len(tac_df.Time) - 1):
+        tac_df.loc[i, 'Time'] = (tac_df.loc[i, 'Time'] + tac_df.loc[i+1, 'Time']) / 2
+    tac_df.loc[len(tac_df.Time) - 1, 'Time'] = last_timepoint  # resolve problem with out of range index
+
+    # add zero value in -15 second time point
+    new_tac_df = pd.DataFrame({measure_type: [0], 'Time': [-15]})  # new TAC df with single zero time point
+    new_tac_df = pd.concat([new_tac_df, tac_df], ignore_index=True)  # merge new and general TAC
+    return new_tac_df
+
+
 # function for computation coefficient of linear regression
 def slope(x, y):
     return x.cov(y) / x.var()
@@ -78,11 +93,22 @@ def intercept(x, y):
 # function for plotting time-activity curve
 def tac_plot(tac_df, filename, measure_type):
     time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df[measure_type])
+
+    # line of linear regression
     reg_line = [slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type]) * t +
                 intercept(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type]) for t in time]
-    late_phase = time.index(600)
+    late_phase = time.index(570) + 1  # cut-off of late phase
     plt.figure(figsize=(12, 4))
-    plt.plot(time, activity, time[late_phase:], reg_line[late_phase:], 'r--')
+    ax = plt.subplot()
+    plt.grid(True)
+    plt.plot(time, activity, time[late_phase:], reg_line[late_phase:], 'r--', linewidth=2)
+    plt.axis([-30, 2400, 0, max(activity) + 0.5])  # axes limits
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(180))  # major x axis devision (ticks)
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(60))  # minor x axis devision (ticks)
+    if max(activity) <= 7.0:
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(0.5))  # major y axis devision (ticks)
+    else:
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(1))  # major y axis devision (ticks)
     plt.xlabel('Time (sec)')
     if measure_type in ['Mean', 'Maximum', 'Peak']:
         plt.ylabel('SUVbw ' + measure_type)
@@ -115,13 +141,14 @@ for roi in ['Max_uptake_circle', 'Max_uptake_sphere', 'Norma']:  # ROI types
             continue
 
         roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
-        for i in range(0, 99):  # number of lesions in working directory
+        for i in range(90, 99):  # number of lesions in working directory
             file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
             file_with_ext = file + '.csv'  # filename with extension for a file opening
             if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
                 print(file + ' - ' + meas)
                 tac = curve_loader(folder, file_with_ext, meas)  # tac dataframe load
                 tac = tac_smoother(tac, meas)  # transform 70-frame-TACs
+                tac = tac_conditioner(tac, meas)  # postprocess TAC
                 tac_plot(tac, file, meas)  # tac plot draw
                 # roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas)  # addition TAC statistics to table
         # roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')

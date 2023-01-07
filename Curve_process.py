@@ -69,7 +69,10 @@ def tac_smoother(tac_df, measure_type):
 def tac_conditioner(tac_df, measure_type):
 
     # shift times to the center of the correspondent frames
+
+    # compute last time point in the center between last real point and virtual next
     last_timepoint = (tac_df.Time[len(tac_df.Time) - 1] * 3 - tac_df.Time[len(tac_df.Time) - 2]) / 2
+    # compute new time points between previous
     for i in range(len(tac_df.Time) - 1):
         tac_df.loc[i, 'Time'] = (tac_df.loc[i, 'Time'] + tac_df.loc[i+1, 'Time']) / 2
     tac_df.loc[len(tac_df.Time) - 1, 'Time'] = last_timepoint  # resolve problem with out of range index
@@ -111,9 +114,9 @@ def tac_plot(tac_df, filename, measure_type):
         ax.yaxis.set_major_locator(ticker.MultipleLocator(1))  # major y axis devision (ticks)
     plt.xlabel('Time (sec)')
     if measure_type in ['Mean', 'Maximum', 'Peak']:
-        plt.ylabel('SUVbw ' + measure_type)
+        plt.ylabel('SUVbw ' + measure_type)  # for SUV curves
     else:
-        plt.ylabel(measure_type)
+        plt.ylabel(measure_type)  # for TBR curves
     plt.savefig(filename + '_' + measure_type.lower() + '.png')
 
 

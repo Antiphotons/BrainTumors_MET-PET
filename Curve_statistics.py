@@ -2,17 +2,27 @@ import os.path
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
+from numpy import percentile, mean, std
+from scipy.stats import sem
 
 
 # function to generate median & percentile curves from TACs
-def curve_percentiles(tac_df):
+def curve_average(tac_df, central_meas):
     y_df = tac_df.drop(columns='Time')
-    median = [np.percentile(y_df.loc[i], 50) for i in range(len(tac_df.Time))]
-    low_percentile = [np.percentile(y_df.loc[i], 5) for i in range(len(tac_df.Time))]
-    high_percentile = [np.percentile(y_df.loc[i], 95) for i in range(len(tac_df.Time))]
-    tac_df['Median'], tac_df['Low_percentile'], tac_df['High_percentile'] = median, \
-                                                                            low_percentile, high_percentile
+    if central_meas == 'Median':
+        average = [percentile(y_df.loc[i], 50) for i in range(len(tac_df.Time))]  # median
+        low_limit = [percentile(y_df.loc[i], 2.5) for i in range(len(tac_df.Time))]  # 1 quartile
+        high_limit = [percentile(y_df.loc[i], 97.5) for i in range(len(tac_df.Time))]  # 3 quartile
+    elif central_meas == 'Mean':
+        average = [mean(y_df.loc[i]) for i in range(len(tac_df.Time))]  # mean
+        low_limit = [mean(y_df.loc[i]) - std(y_df.loc[i]) * 1.96 for i in range(len(tac_df.Time))]  # -1.96 SD
+        high_limit = [mean(y_df.loc[i]) + std(y_df.loc[i]) * 1.96 for i in range(len(tac_df.Time))]  # +1.96 SD
+    elif central_meas == 'CI95':
+        average = [mean(y_df.loc[i]) for i in range(len(tac_df.Time))]  # mean
+        low_limit = [mean(y_df.loc[i]) - sem(y_df.loc[i]) * 1.96 for i in range(len(tac_df.Time))]  # -1.96 SE
+        high_limit = [mean(y_df.loc[i]) + sem(y_df.loc[i]) * 1.96 for i in range(len(tac_df.Time))]  # +1.96 SE
+
+    tac_df['Average'], tac_df['Low_limit'], tac_df['High_limit'] = average, low_limit, high_limit
     return tac_df
 
 
@@ -40,7 +50,7 @@ def curve_loader(folder_path, file_name, measure_type):
     else:
         print('error: check dynamic curve length')
     tac_dataframe = pd.DataFrame({
-        measure_type: voi_dataframe[measure_type],  # type of activity value (mean, max, or peak)
+        measure_type: voi_dataframe[measure_type],  # type of activity value (mean, max, peak or TBR)
         'Time': times  # time points
     })  # finalisation of curve dataframe
     return tac_dataframe
@@ -77,23 +87,40 @@ def tac_smoother(tac_df, measure_type):
     return tac_df
 
 
-# function for reorganise 30-frame TAC to 25-frame TAC
+# function for addition to TAC first frame with zero value and shift times to the frame center
+def tac_conditioner(tac_df, measure_type):
+
+    # shift times to the center of the correspondent frames
+
+    # compute last time point in the center between last real point and virtual next
+    last_timepoint = (tac_df.Time[len(tac_df.Time) - 1] * 3 - tac_df.Time[len(tac_df.Time) - 2]) / 2
+    # compute new time points between previous
+    for i in range(len(tac_df.Time) - 1):
+        tac_df.loc[i, 'Time'] = (tac_df.loc[i, 'Time'] + tac_df.loc[i+1, 'Time']) / 2
+    tac_df.loc[len(tac_df.Time) - 1, 'Time'] = last_timepoint  # resolve problem with out of range index
+
+    # add zero value in -15 second time point
+    new_tac_df = pd.DataFrame({measure_type: [0], 'Time': [-15]})  # new TAC df with single zero time point
+    new_tac_df = pd.concat([new_tac_df, tac_df], ignore_index=True)  # merge new and general TAC
+    return new_tac_df
+
+
+# function for reorganise 31-frame TAC to 26-frame TAC
 def tac_transformer(tac_df, measure_type):
-    if len(tac_df.Time) == 30:
+    if len(tac_df.Time) == 31:
 
         # 120-sec-frames to 180-sec-frames
         nw_tac_df = pd.DataFrame(columns=['Time', measure_type])
-        for i in range(0, 15):
+        for i in range(0, 16):
             nw_tac_df.loc[i] = tac_df.loc[i]
         cnt = 0
-        for i in range(15, 30, 3):
+        for i in range(16, 31, 3):
             nw_tac_df.loc[i - cnt, measure_type] = sum(tac_df[measure_type].loc[i:i + 1]) / 2
             nw_tac_df.loc[i - cnt, 'Time'] = tac_df.loc[i, 'Time']
             nw_tac_df.loc[i + 1 - cnt, measure_type] = sum(tac_df[measure_type].loc[i + 1:i + 2]) / 2
             nw_tac_df.loc[i + 1 - cnt, 'Time'] = tac_df.loc[i, 'Time'] + 180
             cnt += 1
-        nw_tac_df = nw_tac_df.reset_index()
-        del nw_tac_df['index']
+        nw_tac_df = nw_tac_df.reset_index(drop=True)
     else:
         nw_tac_df = tac_df
     return nw_tac_df
@@ -102,8 +129,7 @@ def tac_transformer(tac_df, measure_type):
 # function for generate dataframe consist of TACs of specific histotype, measure and roi
 def filtered_tac_gen(folder_path, lesion_dataframe, histotype, roi, measure_type):
     filtr_lesion_df = lesion_dataframe[lesion_dataframe.Histo == histotype]
-    filtr_lesion_df = filtr_lesion_df.reset_index()
-    del filtr_lesion_df['index']
+    filtr_lesion_df = filtr_lesion_df.reset_index(drop=True)
     tac_df = pd.DataFrame(columns=['Time'])
 
     for i in range(len(filtr_lesion_df.Les)):
@@ -111,7 +137,8 @@ def filtered_tac_gen(folder_path, lesion_dataframe, histotype, roi, measure_type
         if os.path.exists(folder_path + filename):  # checking if a ROI file exists
             tac = curve_loader(folder_path, filename, measure_type)
             tac = tac_smoother(tac, measure_type)  # transform 70-frame-TACs
-            tac = tac_transformer(tac, measure_type)  # transform 30-frame-TACs to 25-frame-TACs
+            tac = tac_conditioner(tac, measure_type)  # replace time points and generate first zero frame
+            tac = tac_transformer(tac, measure_type)  # transform 31-frame-TACs to 26-frame-TACs
             tac_df.Time = tac.Time
             tac_df[filename] = tac[measure_type]
     return tac_df
@@ -129,30 +156,42 @@ def intercept(x, y):
 
 # function for plotting time-activity curve
 def tac_plot(tac_df, filename, measure_type):
-    time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df['Median'])
-    first, second = pd.Series.tolist(tac_df['019_Max_uptake_sphere.csv']), pd.Series.tolist(tac_df['070_Max_uptake_sphere.csv'])
-    l_perc, h_perc = pd.Series.tolist(tac_df['Low_percentile']), pd.Series.tolist(tac_df['High_percentile'])
-    reg_line = [slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600]['Median']) * t +
-                intercept(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600]['Median']) for t in time]
-    late_phase = time.index(600)
+    time, activity = pd.Series.tolist(tac_df['Time']), pd.Series.tolist(tac_df['Average'])
+    # first, second = pd.Series.tolist(tac_df['019_Max_uptake_sphere.csv']),
+    # pd.Series.tolist(tac_df['070_Max_uptake_sphere.csv'])
+    l_lim, h_lim = pd.Series.tolist(tac_df['Low_limit']), pd.Series.tolist(tac_df['High_limit'])
+    reg_line = [slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600]['Average']) * t +
+                intercept(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600]['Average']) for t in time]
+    late_phase = time.index(690)
     plt.figure(figsize=(12, 4))
-    plt.plot(time, first, time, second)
-    #ax = plt.subplot()
-    #ax.fill_between(time, l_perc, h_perc, color='m', alpha=.1)
+    # plt.plot(time, first, time, second)
+    plt.plot(time, activity)
+    ax = plt.subplot()
+    ax.fill_between(time, l_lim, h_lim, color='m', alpha=.1)
     plt.xlabel('Time (sec)')
-    plt.ylabel(measure_type + ' (SUVbw)')
+    if measure_type in ['Mean', 'Maximum', 'Peak']:
+        plt.ylabel('SUVbw ' + measure_type)  # for SUV curves
+    else:
+        plt.ylabel(measure_type)  # for TBR curves
     plt.savefig(filename + '_' + measure_type.lower() + '.png')
 
 
-folder = 'C:/Users/ф/PycharmProjects/Table_processer/Output/'
-lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep='\t')
+folder = 'C:/PycharmProjects/Table_processer/Output/'
+lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep='\t')  # load df with hystotypes
 
-for h in ['АнОДГ']: #['ОДГ', 'АнОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'Мен', 'Мтс', 'DBCLC']:  # histotypes
-    histo = h
-    for r in ['Max_uptake_sphere']:
-        #'Max_uptake_sphere', 'Norma', 'Max_uptake_circle']:  # ROI types
-        roi = r
-        measure = 'Maximum'
-        filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)
-        tac_with_perc = curve_percentiles(filtered_tac_df)
-        tac_plot(tac_with_perc, histo + '_' + roi, measure)  # tac plot draw
+# possible variables
+histotipes = ['ОДГ', 'АнОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'Мен', 'Мтс', 'DBCLC']
+rois = ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']
+uptake_unit_types = ['Mean', 'Maximum', 'TBR_Mean', 'TBR_Maximum']
+central_statistics = ['Median', 'Mean', 'CI95']
+
+for h in range(4,5):  # set histotype
+    histo = histotipes[h]
+    for r in range(0, 1):  # set ROI type
+        roi = rois[r]
+        for m in range(2, 4):  # set uptake unit type
+            measure = uptake_unit_types[m]
+            average = central_statistics[0]  # set type of central statistics and corresponding limits
+            filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)  # df with hystospecific TACs
+            average_tac = curve_average(filtered_tac_df, average)  # generate average TAC with limits
+            tac_plot(average_tac, histo + '_' + roi, measure)  # tac plot draw

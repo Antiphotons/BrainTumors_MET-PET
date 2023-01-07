@@ -22,7 +22,7 @@ def suv_converter(path, lesion, values):
     # Load table with patient weights & activities
     injection = pd.read_csv(path + 'for_SUV.csv', sep=' ',
                             dtype={'lesion_number': str, 'weight': int, 'activity': float})
-    lesion_string = injection[injection.lesion_number == lesion].reset_index()
+    lesion_string = injection[injection.lesion_number == lesion].reset_index(drop=True)
     weight = lesion_string.weight[0]
     activity = lesion_string.activity[0] * 37
     return round(values * weight / activity, 2)
@@ -31,8 +31,8 @@ def suv_converter(path, lesion, values):
 # function for sorting VOI info into separate csv files
 def voi_separation(lesion_number, voi_df):
     # delete CT information and garbage strings
-    voi_df = voi_df[voi_df.Volume != 'CT - CT 3.27 mm']
     voi_df = voi_df[voi_df.ROI != 'PERCIST 1.0']
+    voi_df = voi_df[voi_df['Volume'].str.contains('PET')].reset_index(drop=True)
     voi_df = voi_df[voi_df.ROI != 'Ссылка на VOI - Sphere']
 
     # generating the list of VOI
@@ -40,22 +40,18 @@ def voi_separation(lesion_number, voi_df):
 
     # Particular ROI dataframes generation
     for j in range(len(voi_list)):
-        voi_df_nw = voi_choose(voi_df, voi_list[j]).reset_index()  # choosing ROI
-        del voi_df_nw['index']
+        voi_df_nw = voi_choose(voi_df, voi_list[j]).reset_index(drop=True)  # choosing ROI
 
-        # generating a new data frame with limited ROI info
-        voi_supp_info = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Patient Name', 'Volume', 'ROI', 'Unit']].reset_index()
-        del voi_supp_info['index']
+        # generate a new data frame with limited ROI info
+        voi_supp_info = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Patient Name',
+                                                             'Volume', 'ROI', 'Unit']].reset_index(drop=True)
 
-        voi_max = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Value']].reset_index()
-        del voi_max['index']
+        voi_max = voi_df_nw[voi_df_nw.Stat == 'Макс'][['Value']].reset_index(drop=True)
         voi_max.Value = pd.to_numeric(voi_max.Value)
-        voi_mean = voi_df_nw[voi_df_nw.Stat == 'Средн.'][['Value']].reset_index()
-        del voi_mean['index']
+        voi_mean = voi_df_nw[voi_df_nw.Stat == 'Средн.'][['Value']].reset_index(drop=True)
         voi_mean.Value = pd.to_numeric(voi_mean.Value)
-        voi_peak = voi_df_nw[voi_df_nw.Stat == 'Пик'][['Value']].reset_index()
+        voi_peak = voi_df_nw[voi_df_nw.Stat == 'Пик'][['Value']].reset_index(drop=True)
         voi_peak.loc[(voi_peak.Value == "Недоступно"), 'Value'] = 0  # zeroing inadequate peak values
-        del voi_peak['index']
         voi_peak.Value = pd.to_numeric(voi_peak.Value)
 
         # check for measure units and conversation if units are not SUV
@@ -64,7 +60,7 @@ def voi_separation(lesion_number, voi_df):
             voi_mean.Value = suv_converter(path_to_vois_folder, lesion_number, voi_mean.Value)
             voi_peak.Value = suv_converter(path_to_vois_folder, lesion_number, voi_peak.Value)
         elif voi_supp_info.Unit[0] != 'g/ml':
-            print('error in unit type in lesion number' + lesion_number)  # here lesion num = patient num
+            print('error in unit type in lesion number ' + lesion_number)  # here lesion num = patient num
 
         # VOI dataframe assembly
         voi_df_nw = pd.DataFrame({
@@ -75,6 +71,12 @@ def voi_separation(lesion_number, voi_df):
             'Mean': voi_mean.Value,
             'Peak': voi_peak.Value
         })
+        # Move static PET data to the end of dataframe
+        old_ind = voi_df_nw.Series[voi_df_nw.Series.str.contains('Dynamic') == False].index.tolist()
+        for i in range(len(old_ind)):
+            voi_df_nw.rename(index={old_ind[i]: len(voi_df_nw.Series) + i}, inplace=True)
+        voi_df_nw.sort_index(ascending=True, inplace=True)
+        voi_df_nw = voi_df_nw.reset_index(drop=True)
 
         # Save ROI with usable names
         voi_name_df = pd.read_csv(path_to_vois_folder + 'ROI_list.csv', sep=';', dtype={'Lesion': str})
@@ -120,7 +122,7 @@ def tbr_curve_gen(path, lesion_number):
 # VOI info load in dataframe
 path_to_vois_folder = 'C:/PycharmProjects/Table_processer/Output/'
 
-for i in range(84, 85):
+for i in range(0, 99):
     lesion_num = "{0:0=3d}".format(i + 1)
     if os.path.exists(path_to_vois_folder + lesion_num + '.csv'):  # checking if a lesion .csv file exists
         # voi_df_unsort = voi_loader(path_to_vois_folder, lesion_num)

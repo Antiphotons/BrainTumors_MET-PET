@@ -10,7 +10,7 @@ def curve_loader(folder_path, file_name, measure_type):
     file = file_name  # input from user before function starts
     voi_dataframe = pd.read_csv(path + file, sep='\t')  # previous created VOI .csv
     # only dynamic data preserved
-    voi_dataframe = voi_dataframe[voi_dataframe['Series'].str.contains('Dynamic')].reset_index()
+    voi_dataframe = voi_dataframe[voi_dataframe['Series'].str.contains('Dynamic')].reset_index(drop=True)
     # detect type of curve (25 or 70 frames)
     if len(voi_dataframe.VOI) == 35:
         times = pd.Series([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80,
@@ -122,12 +122,14 @@ def tac_stat(tac_df, measure_type):
     tac_max = max(tac_df[measure_type])  # maximal SUV on curve
     tac_max_ep = max(tac_df[tac_df.Time < 600][measure_type])  # maximum in early phase (0-10 min)
     tac_max_lp = max(tac_df[tac_df.Time >= 600][measure_type])  # maximum in late phase (>10 min)
+    tac_max_60 = max(tac_df[tac_df.Time <= 60][measure_type])  # maximum in initial phase (0-1 min)
     t_max = tac_df.Time[tac_df[tac_df[measure_type] == tac_max].index[-1]]  # time of maximal SUV or TBR
     t_max_ep = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_ep].index[-1]]
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
     b1 = slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type])  # slope
     # string of TAC characteristics
-    tac_char = [tac_max, t_max, t_max_lp, round(tac_max_ep / t_max_ep * 3600, 2), round(b1 * 3600, 4)]
+    tac_char = [round(tac_max, 2), round(tac_max_60, 2), t_max, t_max_lp,
+                round(tac_max_ep / t_max_ep * 3600, 2), round(b1 * 3600, 3)]
     return tac_char
 
 
@@ -140,15 +142,22 @@ for roi in ['Max_uptake_circle', 'Max_uptake_sphere', 'Norma']:  # ROI types
         elif roi == 'Norma' and meas not in ['Mean']:
             continue
 
-        roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late'])
-        for i in range(90, 99):  # number of lesions in working directory
+        roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'Peak_60', 'TTP', 'TTP_late',
+                                        'Slope_early', 'Slope_late', 'TBR_10-30'])
+        for i in range(0, 99):  # number of lesions in working directory
             file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
-            file_with_ext = file + '.csv'  # filename with extension for a file opening
-            if os.path.exists(folder + file_with_ext):  # checking if a ROI file exists
+            file_w_ext = file + '.csv'  # filename with extension for a file opening
+            if os.path.exists(folder + file_w_ext):  # checking if a ROI file exists
                 print(file + ' - ' + meas)
-                tac = curve_loader(folder, file_with_ext, meas)  # tac dataframe load
+                tac = curve_loader(folder, file_w_ext, meas)  # tac dataframe load
                 tac = tac_smoother(tac, meas)  # transform 70-frame-TACs
                 tac = tac_conditioner(tac, meas)  # postprocess TAC
-                tac_plot(tac, file, meas)  # tac plot draw
-                # roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas)  # addition TAC statistics to table
-        # roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')
+                # tac_plot(tac, file, meas)  # tac plot draw
+                if roi != 'Norma':
+                    df_st_tbr = pd.read_csv(folder + file_w_ext, sep='\t')
+                    st_tbr = [df_st_tbr.loc[len(df_st_tbr) - 1, 'TBR_Mean']]
+                    roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + st_tbr  # add TAC statistics
+                else:
+                    roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + ['unsuitable']
+
+        roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')

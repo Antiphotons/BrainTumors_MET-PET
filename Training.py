@@ -8,17 +8,12 @@ from math import inf
 #import seaborn as sns
 
 path_to_vois_folder = 'C:/PycharmProjects/Table_processer/Output/'
-m = 'dich'
 df = pd.read_csv(path_to_vois_folder + '020_Norma.csv', sep='\t')
 del df['Unnamed: 0']
-curve = pd.DataFrame()
-curve['Mean'] = df.Mean[1:]
-curve.reset_index()
-curve['Time'] = df.index[1:] * 10
-curve.loc[25, ['Mean']] = 1.37
-m = max(curve['Mean'])
-t_m = curve.Time[curve.Mean[curve.Mean == m].index[0]]
+old_ind = df.Series[df.Series.str.contains('Dynamic') == False].index.tolist()
+for i in range(len(old_ind)):
+    df.rename(index={old_ind[i]: len(df.Series)+i}, inplace=True)
+df.sort_index(ascending=True, inplace=True)
+df = df.reset_index(drop=True)
 
-print(curve)
-print()
-print(t_m)
+print(df)

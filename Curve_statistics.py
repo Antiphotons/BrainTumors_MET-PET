@@ -176,22 +176,47 @@ def tac_plot(tac_df, filename, measure_type):
     plt.savefig(filename + '_' + measure_type.lower() + '.png')
 
 
+# # function for plotting multiple time-activity curves
+def tac_multiplot(tacs_df, measure_type):
+    time = pd.Series.tolist(tacs_df['', 'Time'])
+    plt.figure(figsize=(12, 4))
+    for h in range(0, len(tacs_df.columns) - 1, 3):
+        activity = pd.Series.tolist(tacs_df[tacs_df.columns[h]])
+        l_lim = pd.Series.tolist(tacs_df[tacs_df.columns[h+1]])
+        h_lim = pd.Series.tolist(tacs_df[tacs_df.columns[h+2]])
+        ax, ax1 = plt.subplot(), plt.subplot()
+        ax.plot(time, activity)
+        ax1.fill_between(time, l_lim, h_lim, alpha=.1)
+
+    plt.savefig('Multiplot.png')
+
+
 folder = 'C:/PycharmProjects/Table_processer/Output/'
 lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep='\t')  # load df with hystotypes
 
 # possible variables
-histotipes = ['ОДГ', 'АнОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'Мен', 'Мтс', 'DBCLC']
+histotypes = ['ОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'АнОДГ', 'Мен', 'Мтс', 'DBCLC']
 rois = ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']
 uptake_unit_types = ['Mean', 'Maximum', 'TBR_Mean', 'TBR_Maximum']
 central_statistics = ['Median', 'Mean', 'CI95']
+stats = ['Average', 'Low_limit', 'High_limit']
 
-for h in range(4,5):  # set histotype
-    histo = histotipes[h]
+# df for multiple histotype curve plot
+iterables = [histotypes[0:2], stats]  # set required hystotypes
+multindex = pd.MultiIndex.from_product(iterables, names=['Histotype', 'Stats'])
+all_hys_tacs = pd.DataFrame(columns=multindex)  # generate dataframe
+
+for h in range(4):  # set histotype
+    histo = histotypes[h]
     for r in range(0, 1):  # set ROI type
         roi = rois[r]
-        for m in range(2, 4):  # set uptake unit type
+        for m in range(1):  # set uptake unit type
             measure = uptake_unit_types[m]
-            average = central_statistics[0]  # set type of central statistics and corresponding limits
+            average = central_statistics[2]  # set type of central statistics and corresponding limits
             filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)  # df with hystospecific TACs
-            average_tac = curve_average(filtered_tac_df, average)  # generate average TAC with limits
-            tac_plot(average_tac, histo + '_' + roi, measure)  # tac plot draw
+            tac_w_average = curve_average(filtered_tac_df, average)  # add average TAC with limits to df
+            tac_plot(tac_w_average, histo + '_' + roi, measure)  # tac plot draw
+            for stat in stats:
+                all_hys_tacs[(histo, stat)] = tac_w_average[stat]
+all_hys_tacs[('', 'Time')] = tac_w_average['Time']
+tac_multiplot(all_hys_tacs, uptake_unit_types[0])

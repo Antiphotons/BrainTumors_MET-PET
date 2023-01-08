@@ -1,5 +1,5 @@
 	Series	VOI	Maximum	Mean	Peak	TBR_Mean	TBR_Maximum
-0	PET - Dynamic 40min DYN 3DMAC - frame 1 (0s)	ROI 2 - Sphere	0.0	0.0	0.0		
+0	PET - Dynamic 40min DYN 3DMAC - frame 1 (0s)	ROI 2 - Sphere	0.0	0.0	0.0	0.0	0.0
 1	PET - Dynamic 40min DYN 3DMAC - frame 2 (30s)	ROI 2 - Sphere	2.29	0.71	0.81	3.38	10.9
 2	PET - Dynamic 40min DYN 3DMAC - frame 3 (60s)	ROI 2 - Sphere	3.3	0.83	0.91	4.37	17.37
 3	PET - Dynamic 40min DYN 3DMAC - frame 4 (90s)	ROI 2 - Sphere	1.64	0.6	0.59	3.33	9.11

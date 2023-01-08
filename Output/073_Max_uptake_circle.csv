@@ -1,5 +1,5 @@
 	Series	VOI	Maximum	Mean	Peak	TBR_Mean
-0	PET - Dynamic 40min DYN 3DMAC - frame 1 (0s)	ROI 3 - 2D Ellipse	0.0	0.0		
+0	PET - Dynamic 40min DYN 3DMAC - frame 1 (0s)	ROI 3 - 2D Ellipse	0.0	0.0		0.0
 1	PET - Dynamic 40min DYN 3DMAC - frame 2 (30s)	ROI 3 - 2D Ellipse	0.93	0.59		0.73
 2	PET - Dynamic 40min DYN 3DMAC - frame 3 (60s)	ROI 3 - 2D Ellipse	2.29	1.48		1.53
 3	PET - Dynamic 40min DYN 3DMAC - frame 4 (90s)	ROI 3 - 2D Ellipse	4.14	2.2		2.44

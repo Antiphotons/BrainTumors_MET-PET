@@ -1,6 +1,6 @@
 import pandas as pd
 import os.path
-from math import inf
+from math import inf, isnan
 
 
 # function for load information from csv with VOI info
@@ -106,7 +106,7 @@ def tbr_curve_gen(path, lesion_number):
 
                     # change infinite TBR values to zero (since this is the result of zero SUV in normal VOI)
                     for i in range(len(voi_df['Series'])):
-                        if voi_df['TBR_' + m][i] == inf:
+                        if voi_df['TBR_' + m][i] == inf or isnan(voi_df['TBR_' + m][i]):
                             voi_df.loc[i, ['TBR_' + m]] = 0
                     print(lesion_number + v + ' - TBR_' + m)
 

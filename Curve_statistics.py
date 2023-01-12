@@ -2,7 +2,7 @@ import os.path
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from numpy import percentile, mean, std
+from numpy import percentile, mean, std, triu, ones_like
 from scipy.stats import sem
 
 
@@ -144,6 +144,17 @@ def filtered_tac_gen(folder_path, lesion_dataframe, histotype, roi, measure_type
     return tac_df
 
 
+# function for filtering and sorting of csv with clinical and demographic data
+def patient_list_sort(folder_path, lesion_dataframe):
+    nw_lesion_df = pd.DataFrame(columns=lesion_dataframe.columns)
+    for i in range(len(lesion_dataframe.Les)):
+        filename = "{0:0=3d}".format(lesion_dataframe.Les[i]) + '.csv'
+        if os.path.exists(folder_path + filename):  # checking if a ROI file exists
+            nw_lesion_df = pd.concat([nw_lesion_df, lesion_dataframe.iloc[i].to_frame().T], ignore_index=True)
+            nw_lesion_df = nw_lesion_df.sort_values(by='Les')
+    nw_lesion_df.to_csv('Patient_list_sorted.csv', '\t')
+
+
 # function for computation coefficient of linear regression
 def slope(x, y):
     return x.cov(y) / x.var()
@@ -176,7 +187,7 @@ def tac_plot(tac_df, filename, measure_type):
     plt.savefig(filename + '_' + measure_type.lower() + '.png')
 
 
-# # function for plotting multiple time-activity curves
+# function for plotting multiple time-activity curves
 def tac_multiplot(tacs_df, measure_type):
     time = pd.Series.tolist(tacs_df['', 'Time'])
     plt.figure(figsize=(12, 4))
@@ -189,6 +200,33 @@ def tac_multiplot(tacs_df, measure_type):
         ax1.fill_between(time, l_lim, h_lim, alpha=.1)
 
     plt.savefig('Multiplot.png')
+
+
+# function for generating correlation heatmap half-matrix
+def correlation_heatmap(path):
+    sns.set_theme(style="white")
+
+    # Load dataset
+    d = pd.read_csv(path, sep='\t')
+    del d['Unnamed: 0']
+
+    # Compute the correlation matrix
+    corr = d.corr()
+    print(corr)
+
+    # Generate a mask for the upper triangle
+    mask = triu(ones_like(corr, dtype=bool))
+
+    # Set up the matplotlib figure
+    f, ax = plt.subplots(figsize=(11, 20))
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+    # Draw the heatmap with the mask and correct aspect ratio
+    sns.heatmap(corr, mask=mask, cmap=cmap, vmax=1, center=0,
+                square=True, linewidths=.5, cbar_kws={"shrink": .5})
+    plt.show()
 
 
 folder = 'C:/PycharmProjects/Table_processer/Output/'
@@ -206,17 +244,19 @@ iterables = [histotypes[0:2], stats]  # set required hystotypes
 multindex = pd.MultiIndex.from_product(iterables, names=['Histotype', 'Stats'])
 all_hys_tacs = pd.DataFrame(columns=multindex)  # generate dataframe
 
-for h in range(4):  # set histotype
+for h in range(8):  # set histotype
     histo = histotypes[h]
     for r in range(0, 1):  # set ROI type
         roi = rois[r]
         for m in range(1):  # set uptake unit type
             measure = uptake_unit_types[m]
             average = central_statistics[2]  # set type of central statistics and corresponding limits
-            filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)  # df with hystospecific TACs
-            tac_w_average = curve_average(filtered_tac_df, average)  # add average TAC with limits to df
-            tac_plot(tac_w_average, histo + '_' + roi, measure)  # tac plot draw
-            for stat in stats:
-                all_hys_tacs[(histo, stat)] = tac_w_average[stat]
-all_hys_tacs[('', 'Time')] = tac_w_average['Time']
-tac_multiplot(all_hys_tacs, uptake_unit_types[0])
+            #filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)  # df with hystospecific TACs
+            #tac_w_average = curve_average(filtered_tac_df, average)  # add average TAC with limits to df
+            #tac_plot(tac_w_average, histo + '_' + roi, measure)  # tac plot draw
+            #for stat in stats:
+                #all_hys_tacs[(histo, stat)] = tac_w_average[stat]
+#all_hys_tacs[('', 'Time')] = tac_w_average['Time']
+#tac_multiplot(all_hys_tacs, uptake_unit_types[0])
+#patient_list_sort(folder, lesion_df)
+correlation_heatmap('C:/PycharmProjects/Table_processer/Curve_stats.csv')

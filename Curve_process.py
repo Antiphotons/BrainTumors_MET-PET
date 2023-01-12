@@ -137,17 +137,23 @@ def tac_stat(tac_df, measure_type):
 
 
 folder = 'C:/PycharmProjects/Table_processer/Output/'
+regions = ['Max_uptake_sphere', 'Max_uptake_circle', 'Norma']
+uptake_measures = ['Mean', 'TBR_Mean', 'Maximum', 'TBR_Maximum']
+curve_measures = ['Lesion', 'Peak', 'Peak_60', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late', 'TBR_10-30']
 
-for roi in ['Max_uptake_circle', 'Max_uptake_sphere', 'Norma']:  # ROI types
-    for meas in ['Mean', 'Maximum', 'TBR_Mean', 'TBR_Maximum']:  # measure types
+
+all_tac_stats = pd.DataFrame()  # generate dataframe for all curve statistics
+
+# Main process
+for roi in regions:  # ROI types
+    for meas in uptake_measures:  # measure types
         if roi == 'Max_uptake_circle' and meas in ['Maximum', 'TBR_Maximum']:  # skip nonexistent data
             continue
         elif roi == 'Norma' and meas not in ['Mean']:
             continue
 
-        roi_tbl = pd.DataFrame(columns=['Lesion', 'Peak', 'Peak_60', 'TTP', 'TTP_late',
-                                        'Slope_early', 'Slope_late', 'TBR_10-30'])
-        for i in range(0, 99):  # number of lesions in working directory
+        roi_tbl = pd.DataFrame(columns=curve_measures)
+        for i in range(0, 10):  # number of lesions in working directory
             file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
             file_w_ext = file + '.csv'  # filename with extension for a file opening
             if os.path.exists(folder + file_w_ext):  # checking if a ROI file exists
@@ -156,11 +162,17 @@ for roi in ['Max_uptake_circle', 'Max_uptake_sphere', 'Norma']:  # ROI types
                 tac = tac_smoother(tac, meas)  # transform 70-frame-TACs
                 tac = tac_conditioner(tac, meas)  # postprocess TAC
                 # tac_plot(tac, file, meas)  # tac plot draw
-                if roi != 'Norma':
+                if roi != 'Norma' and meas == 'TBR_Mean':
                     df_st_tbr = pd.read_csv(folder + file_w_ext, sep='\t')
-                    st_tbr = [df_st_tbr.loc[len(df_st_tbr) - 1, 'TBR_Mean']]
+                    st_tbr = [df_st_tbr.loc[len(df_st_tbr) - 1, meas]]
                     roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + st_tbr  # add TAC statistics
                 else:
-                    roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + ['unsuitable']
+                    roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + ['']
 
-        roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')
+        # roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')
+        for stat in curve_measures:
+            if roi != 'Norma' and stat != 'Lesion':
+                all_tac_stats[roi[11:14] + ' ' + meas + ' ' + stat] = roi_tbl[stat]
+
+# delete repeatable static TBRs and write .csv
+all_tac_stats.to_csv('Curve_stats.csv', '\t')

@@ -137,10 +137,11 @@ def tac_stat(tac_df, measure_type):
 
 
 folder = 'C:/PycharmProjects/Table_processer/Output/'
+
+# iterable variables
 regions = ['Max_uptake_sphere', 'Max_uptake_circle', 'Norma']
 uptake_measures = ['Mean', 'TBR_Mean', 'Maximum', 'TBR_Maximum']
 curve_measures = ['Lesion', 'Peak', 'Peak_60', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late', 'TBR_10-30']
-
 
 all_tac_stats = pd.DataFrame()  # generate dataframe for all curve statistics
 
@@ -153,7 +154,7 @@ for roi in regions:  # ROI types
             continue
 
         roi_tbl = pd.DataFrame(columns=curve_measures)
-        for i in range(0, 10):  # number of lesions in working directory
+        for i in range(0, 99):  # number of lesions in working directory
             file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
             file_w_ext = file + '.csv'  # filename with extension for a file opening
             if os.path.exists(folder + file_w_ext):  # checking if a ROI file exists
@@ -164,15 +165,24 @@ for roi in regions:  # ROI types
                 # tac_plot(tac, file, meas)  # tac plot draw
                 if roi != 'Norma' and meas == 'TBR_Mean':
                     df_st_tbr = pd.read_csv(folder + file_w_ext, sep='\t')
-                    st_tbr = [df_st_tbr.loc[len(df_st_tbr) - 1, meas]]
+                    st_tbr = [df_st_tbr.loc[len(df_st_tbr) - 1, meas]]  # extract static TBR
                     roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + st_tbr  # add TAC statistics
                 else:
-                    roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + ['']
+                    roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + ['']  # add TAC statistics
 
-        # roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')
+        # roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')  # wright roi-measure csv with curve statistics
         for stat in curve_measures:
             if roi != 'Norma' and stat != 'Lesion':
-                all_tac_stats[roi[11:14] + ' ' + meas + ' ' + stat] = roi_tbl[stat]
+                all_tac_stats[meas + ' ' + roi[11:14] + ' ' + stat] = roi_tbl[stat]  # wright joined curve statistics
 
-# delete repeatable static TBRs and write .csv
-all_tac_stats.to_csv('Curve_stats.csv', '\t')
+# sort columns by curve measures, delete repeatable static TBRs and write .csv
+new_list, new_columns = [[]] * 8, []
+for col in all_tac_stats.columns:
+    for s in range(1, len(curve_measures) - 1):  # list of curve measures without Lesion number and static TBR
+        if col.split(' ')[2] == curve_measures[s]:
+            new_list[s] = new_list[s] + [col]  # fill categorisation list
+for i in range(8):
+    new_columns = new_columns + new_list[i]  # split list of lists
+new_columns = new_columns + ['TBR_Mean sph TBR_10-30', 'TBR_Mean cir TBR_10-30']  # add static TBR
+all_tac_stats = all_tac_stats[new_columns]  # re-wright with new column oreder
+all_tac_stats.to_csv('Curve_stats.csv', '\t')  # wright csv

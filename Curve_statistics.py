@@ -127,8 +127,11 @@ def tac_transformer(tac_df, measure_type):
 
 
 # function for generate dataframe consist of TACs of specific histotype, measure and roi
-def filtered_tac_gen(folder_path, lesion_dataframe, histotype, roi, measure_type):
-    filtr_lesion_df = lesion_dataframe[lesion_dataframe.Histo == histotype]
+def filtered_tac_gen(folder_path, lesion_dataframe, type, group, roi, measure_type):
+    if type == 'Hystology':
+        filtr_lesion_df = lesion_dataframe[lesion_dataframe.Histo == group]
+    elif type == 'Malignance':
+        filtr_lesion_df = lesion_dataframe[lesion_dataframe.Mal == group]
     filtr_lesion_df = filtr_lesion_df.reset_index(drop=True)
     tac_df = pd.DataFrame(columns=['Time'])
 
@@ -199,7 +202,7 @@ def tac_multiplot(tacs_df, measure_type):
         ax.plot(time, activity)
         ax1.fill_between(time, l_lim, h_lim, alpha=.1)
 
-    plt.savefig('Multiplot.png')
+    plt.savefig('Ben_and_mal_Norma_mean.png')
 
 
 # function for generating correlation heatmap half-matrix
@@ -212,7 +215,6 @@ def correlation_heatmap(path):
 
     # Compute the correlation matrix
     corr = d.corr()
-    print(corr)
 
     # Generate a mask for the upper triangle
     mask = triu(ones_like(corr, dtype=bool))
@@ -234,29 +236,36 @@ lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep='\t')  # load df with h
 
 # possible variables
 histotypes = ['ОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'АнОДГ', 'Мен', 'Мтс', 'DBCLC']
+malignance = ['добр', 'зло']
+
 rois = ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']
 uptake_unit_types = ['Mean', 'Maximum', 'TBR_Mean', 'TBR_Maximum']
 central_statistics = ['Median', 'Mean', 'CI95']
 stats = ['Average', 'Low_limit', 'High_limit']
+groups = [histotypes, malignance]
 
 # df for multiple histotype curve plot
-iterables = [histotypes[0:2], stats]  # set required hystotypes
-multindex = pd.MultiIndex.from_product(iterables, names=['Histotype', 'Stats'])
-all_hys_tacs = pd.DataFrame(columns=multindex)  # generate dataframe
+iterables = [groups[1][:], stats]  # set required hystotypes
+multindex = pd.MultiIndex.from_product(iterables, names=['Groups', 'Stats'])
+all_gr_tacs = pd.DataFrame(columns=multindex)  # generate dataframe
 
-for h in range(8):  # set histotype
-    histo = histotypes[h]
-    for r in range(0, 1):  # set ROI type
+
+# plot averaged TAC for particular histology
+
+for g in range(2):
+    group = groups[1][g]  # set subgroup of selecteg group
+    for r in range(1, 2):  # set ROI type
         roi = rois[r]
         for m in range(1):  # set uptake unit type
             measure = uptake_unit_types[m]
-            average = central_statistics[2]  # set type of central statistics and corresponding limits
-            #filtered_tac_df = filtered_tac_gen(folder, lesion_df, histo, roi, measure)  # df with hystospecific TACs
-            #tac_w_average = curve_average(filtered_tac_df, average)  # add average TAC with limits to df
-            #tac_plot(tac_w_average, histo + '_' + roi, measure)  # tac plot draw
-            #for stat in stats:
-                #all_hys_tacs[(histo, stat)] = tac_w_average[stat]
-#all_hys_tacs[('', 'Time')] = tac_w_average['Time']
-#tac_multiplot(all_hys_tacs, uptake_unit_types[0])
-#patient_list_sort(folder, lesion_df)
-correlation_heatmap('C:/PycharmProjects/Table_processer/Curve_stats.csv')
+            average = central_statistics[0]  # set type of central statistics and corresponding limits
+            # create df with group-specific TACs
+            filtered_tac_df = filtered_tac_gen(folder, lesion_df, 'Malignance', group, roi, measure)
+            tac_w_average = curve_average(filtered_tac_df, average)  # add average TAC with limits to df
+            tac_plot(tac_w_average, group + '_' + roi, measure)  # tac plot draw
+            for stat in stats:
+                all_gr_tacs[(group, stat)] = tac_w_average[stat]
+all_gr_tacs[('', 'Time')] = tac_w_average['Time']
+tac_multiplot(all_gr_tacs, uptake_unit_types[0])
+# patient_list_sort(folder, lesion_df)
+# correlation_heatmap('C:/PycharmProjects/Table_processer/Curve_stats.csv')

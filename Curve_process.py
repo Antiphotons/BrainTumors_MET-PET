@@ -131,21 +131,25 @@ def tac_stat(tac_df, measure_type):
     t_max_lp = tac_df.Time[tac_df[tac_df[measure_type] == tac_max_lp].index[-1]]
     b1 = slope(tac_df[tac_df.Time >= 600]['Time'], tac_df[tac_df.Time >= 600][measure_type])  # slope
     # string of TAC characteristics
-    tac_char = [round(tac_max, 2), round(tac_max_60, 2), t_max, t_max_lp,
-                round(tac_max_ep / t_max_ep * 3600, 2), round(b1 * 3600, 3)]
+    tac_char = [round(tac_max, 2), round(tac_max_60, 2), round(t_max / 60, 0), round(t_max_lp / 60, 0),
+                round(tac_max_ep / t_max_ep * 60, 2), round(b1 * 3600, 3)]
     return tac_char
 
 
-folder = 'C:/PycharmProjects/Table_processer/Output/'
+folder = 'C:/PycharmProjects/Table_processer/Output/'  # work folder
 
 # iterable variables
 regions = ['Max_uptake_sphere', 'Max_uptake_circle', 'Norma']
 uptake_measures = ['Mean', 'TBR_Mean', 'Maximum', 'TBR_Maximum']
 curve_measures = ['Lesion', 'Peak', 'Peak_60', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late', 'TBR_10-30']
 
-all_tac_stats = pd.DataFrame()  # generate dataframe for all curve statistics
+all_tac_stats, tac_stats_vert = pd.DataFrame(), pd.DataFrame()  # generate dataframes for all curve statistics
 
-# Main process
+
+pipelines = ['plot', 'roi_stat', 'vertical_stat', 'all_stat', 'all_stat_resort']
+pipeline_switch = pipelines[2]
+
+# Main process of curve statistics generation
 for roi in regions:  # ROI types
     for meas in uptake_measures:  # measure types
         if roi == 'Max_uptake_circle' and meas in ['Maximum', 'TBR_Maximum']:  # skip nonexistent data
@@ -162,7 +166,11 @@ for roi in regions:  # ROI types
                 tac = curve_loader(folder, file_w_ext, meas)  # tac dataframe load
                 tac = tac_smoother(tac, meas)  # transform 70-frame-TACs
                 tac = tac_conditioner(tac, meas)  # postprocess TAC
-                # tac_plot(tac, file, meas)  # tac plot draw
+
+                if 'plot' in pipeline_switch:
+                    tac_plot(tac, file, meas)  # tac plot draw
+
+                # create a table with curve statistics
                 if roi != 'Norma' and meas == 'TBR_Mean':
                     df_st_tbr = pd.read_csv(folder + file_w_ext, sep='\t')
                     st_tbr = [df_st_tbr.loc[len(df_st_tbr) - 1, meas]]  # extract static TBR
@@ -170,19 +178,45 @@ for roi in regions:  # ROI types
                 else:
                     roi_tbl.loc[i] = ["{0:0=3d}".format(i + 1)] + tac_stat(tac, meas) + ['']  # add TAC statistics
 
-        # roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')  # wright roi-measure csv with curve statistics
-        for stat in curve_measures:
-            if roi != 'Norma' and stat != 'Lesion':
-                all_tac_stats[meas + ' ' + roi[11:14] + ' ' + stat] = roi_tbl[stat]  # wright joined curve statistics
+        if 'roi_stat' in pipeline_switch:
+            roi_tbl.to_csv(roi + '_' + meas + '.csv', sep='\t')  # wright roi-measure csv with curve statistics
 
-# sort columns by curve measures, delete repeatable static TBRs and write .csv
-new_list, new_columns = [[]] * 8, []
-for col in all_tac_stats.columns:
-    for s in range(1, len(curve_measures) - 1):  # list of curve measures without Lesion number and static TBR
-        if col.split(' ')[2] == curve_measures[s]:
-            new_list[s] = new_list[s] + [col]  # fill categorisation list
-for i in range(8):
-    new_columns = new_columns + new_list[i]  # split list of lists
-new_columns = new_columns + ['TBR_Mean sph TBR_10-30', 'TBR_Mean cir TBR_10-30']  # add static TBR
-all_tac_stats = all_tac_stats[new_columns]  # re-wright with new column oreder
-all_tac_stats.to_csv('Curve_stats.csv', '\t')  # wright csv
+        if 'vertical_stat' in pipeline_switch:
+            roi_col = [roi] * len(roi_tbl.Lesion)
+            meas_col = [meas] * len(roi_tbl.Lesion)
+            roi_tbl['ROI'], roi_tbl['Meas'] = roi_col, meas_col  # columns filled by ROI and measure names
+            tac_stats_vert = pd.concat([tac_stats_vert, roi_tbl], axis=0)  # vertically-oriented dataframe
+            tac_cvm_vert = pd.DataFrame()
+
+        for cvm in curve_measures[1:]:
+            if 'vertical_stat' in pipeline_switch:
+                cvm_col = [cvm] * len(tac_stats_vert)
+                tac_stats_vert['CvMeas'] = cvm_col  # column filled by curve measure name
+                tac_stats_vert['Value'] = tac_stats_vert[cvm]  # column with single variable
+                tac_cvm_vert = pd.concat(
+                    [tac_cvm_vert, tac_stats_vert[['Lesion', 'Value', 'CvMeas', 'ROI', 'Meas']]], axis=0)
+
+            if roi != 'Norma' and cvm != 'Lesion':
+                all_tac_stats[meas + ' ' + roi[11:14] + ' ' + cvm] = roi_tbl[cvm]  # wright joined curve statistics
+
+if 'vertical_stat' in pipeline_switch:  # vertically-oriented 1-dimensional curve measure dataframe
+    tac_cvm_vert.to_csv('All_stats_vertical.csv', sep='\t')
+
+if 'all_stat' in pipeline_switch:  # horizontally-oriented curve measures dataframe
+    all_tac_stats.index = roi_tbl['Lesion']
+    all_tac_stats.to_csv('All_stats.csv', sep='\t')
+
+if 'all_stat_resort' in pipeline_switch:
+
+    # sort columns by curve measures, delete repeatable static TBRs and write .csv
+    # need for correlation heatmap plotting
+    new_list, new_columns = [[]] * 8, []
+    for col in all_tac_stats.columns:
+        for s in range(1, len(curve_measures) - 1):  # list of curve measures without Lesion number and static TBR
+            if col.split(' ')[2] == curve_measures[s]:
+                new_list[s] = new_list[s] + [col]  # fill categorisation list
+    for i in range(8):
+        new_columns = new_columns + new_list[i]  # split list of lists
+    new_columns = new_columns + ['TBR_Mean sph TBR_10-30', 'TBR_Mean cir TBR_10-30']  # add static TBR
+    all_tac_stats = all_tac_stats[new_columns]  # re-wright with new column order
+    all_tac_stats.to_csv('All_stats_sort.csv', '\t')  # wright csv with new column order

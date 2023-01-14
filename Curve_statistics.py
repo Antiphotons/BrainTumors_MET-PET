@@ -136,7 +136,7 @@ def filtered_tac_gen(folder_path, lesion_dataframe, type, group, roi, measure_ty
     tac_df = pd.DataFrame(columns=['Time'])
 
     for i in range(len(filtr_lesion_df.Les)):
-        filename = "{0:0=3d}".format(filtr_lesion_df.Les[i]) + '_' + roi + '.csv'
+        filename = filtr_lesion_df.Les[i] + '_' + roi + '.csv'
         if os.path.exists(folder_path + filename):  # checking if a ROI file exists
             tac = curve_loader(folder_path, filename, measure_type)
             tac = tac_smoother(tac, measure_type)  # transform 70-frame-TACs
@@ -148,14 +148,45 @@ def filtered_tac_gen(folder_path, lesion_dataframe, type, group, roi, measure_ty
 
 
 # function for filtering and sorting of csv with clinical and demographic data
-def patient_list_sort(folder_path, lesion_dataframe):
+def patient_list_sort(folder_path, lesion_dataframe, save_option):
     nw_lesion_df = pd.DataFrame(columns=lesion_dataframe.columns)
     for i in range(len(lesion_dataframe.Les)):
-        filename = "{0:0=3d}".format(lesion_dataframe.Les[i]) + '.csv'
+        filename = lesion_dataframe.Les[i] + '.csv'
         if os.path.exists(folder_path + filename):  # checking if a ROI file exists
             nw_lesion_df = pd.concat([nw_lesion_df, lesion_dataframe.iloc[i].to_frame().T], ignore_index=True)
             nw_lesion_df = nw_lesion_df.sort_values(by='Les')
-    nw_lesion_df.to_csv('Patient_list_sorted.csv', '\t')
+    if save_option == 'save':
+        nw_lesion_df.to_csv('Patient_list_sorted.csv', '\t')
+    return nw_lesion_df
+
+
+# function for merging clinical data from the patient_list.csv with curve statistics df
+def clinic_to_curve(folder_path, stat_file, clin_df, orient='vert'):
+
+    stat_df = pd.read_csv(folder_path + stat_file, sep='\t',
+                          dtype={'Lesion': str})  # file with all curve statistics
+    clin_df_sort = patient_list_sort(folder_path, clin_df, 'no')  # sort patient_list by Lesion number
+
+    if orient == 'vert':  # vertically-oriented dataframe
+        stat_df.reset_index(drop=True)
+
+        # vertically multiplication of clinical dataframe
+        if len(stat_df.Lesion) % len(clin_df_sort.Les) != 0:
+            print('ERROR: stat df length not multiple of clinical df legth')
+        clin_df_nw = pd.DataFrame()
+        for _ in range(int(len(stat_df.Lesion) / len(clin_df_sort.Les))):
+            clin_df_nw = pd.concat([clin_df_nw, clin_df_sort], axis=0)
+        clin_df_sort = clin_df_nw.reset_index(drop=True)
+
+    if orient == 'hor':  # horizontally-oriented dataframe
+
+        stat_df.index = stat_df.Lesion
+        clin_df_sort = patient_list_sort(folder_path, clin_df, 'no')  # sort patient_list by Lesion number
+        clin_df_sort.index = clin_df_sort['Les']  # set Lesion number as index
+        clin_df_sort.index.rename('Lesion')
+
+    both_df = pd.concat([stat_df, clin_df_sort], axis=1)  # merge data
+    return both_df
 
 
 # function for computation coefficient of linear regression
@@ -193,16 +224,21 @@ def tac_plot(tac_df, filename, measure_type):
 # function for plotting multiple time-activity curves
 def tac_multiplot(tacs_df, measure_type):
     time = pd.Series.tolist(tacs_df['', 'Time'])
-    plt.figure(figsize=(12, 4))
+    plt.figure(figsize=(9, 4))
     for h in range(0, len(tacs_df.columns) - 1, 3):
         activity = pd.Series.tolist(tacs_df[tacs_df.columns[h]])
         l_lim = pd.Series.tolist(tacs_df[tacs_df.columns[h+1]])
         h_lim = pd.Series.tolist(tacs_df[tacs_df.columns[h+2]])
         ax, ax1 = plt.subplot(), plt.subplot()
-        ax.plot(time, activity)
+        ax.plot(time, activity, label=tacs_df.columns[h][0] + 'качественные')
         ax1.fill_between(time, l_lim, h_lim, alpha=.1)
-
-    plt.savefig('Ben_and_mal_Norma_mean.png')
+    plt.xlabel('Time (sec)')
+    if measure_type in ['Mean', 'Maximum', 'Peak']:
+        plt.ylabel('SUVbw ' + measure_type + ' (g/ml)')  # for SUV curves
+    else:
+        plt.ylabel(measure_type)  # for TBR curves
+    plt.legend(loc='lower right')
+    plt.savefig('Ben_and_mal_' + measure_type + '.png')
 
 
 # function for generating correlation heatmap half-matrix
@@ -231,12 +267,65 @@ def correlation_heatmap(path):
     plt.show()
 
 
-folder = 'C:/PycharmProjects/Table_processer/Output/'
-lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep='\t')  # load df with hystotypes
+# function for plotting violin plots for curve statistics
+def violin_plot(dataframe, group_type, groups, cv_chars, measure, roi):
+    sns.set_theme(style="whitegrid", font_scale=1.2)
+    curve_dict = {
+        'Max_uptake_sphere_Mean': 'SUVsph',
+        'Max_uptake_sphere_Maximum': 'SUVmax',
+        'Max_uptake_sphere_TBR_Mean': 'TBRsph',
+        'Max_uptake_sphere_TBR_Maximum': 'TBRmax',
+        'Max_uptake_circle_Mean': 'SUVcrc',
+        'Max_uptake_circle_TBR_Mean': 'TBRcrc'
+    }
+
+    # filter rows with needed group labels
+    df_g, df_r, df_m, df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+    for g in groups:  # filter needed groups
+        df_part = dataframe[dataframe[group_type] == g]
+        df_g = pd.concat([df_g, df_part])  # df with needed groups only
+    for r in roi:  # filter needed ROIs
+        df_part = df_g[df_g['ROI'] == r]
+        df_r = pd.concat([df_r, df_part])  # df with needed groups and ROIs only
+    for m in measure:  # filter needed uptake units
+        df_part = df_r[df_r['Meas'] == m]
+        df_m = pd.concat([df_m, df_part])  # df with needed groups, units and ROIs only
+    for cv in cv_chars:
+        df_part = df_m[df_m['CvMeas'] == cv]
+        df = pd.concat([df, df_part])  # df with needed curve measures, groups, units and ROIs only
+
+    # create new column with curve & measure (ROI + uptake unit + curve characteristic)
+    df['Curve_char'] = df['ROI'] + '_' + df['Meas'] + '_' + df['CvMeas']
+
+    # create x labels
+    curves = [df['ROI'].tolist()[i] + '_' + df['Meas'].tolist()[i] for i in range(len(df['ROI']))]
+    curves = pd.Series(curves).unique()  # list of actual curves
+    xlabels = [curve_dict[c] for c in curves] * len(cv_chars)
+
+    f, ax = plt.subplots(figsize=(11, 6))
+    sns.violinplot(data=df, x='Curve_char', y='Value', hue=group_type,
+                   cut=0, split=True, scale='width', bw=.25, color="r")
+
+    # sns.swarmplot(data=df, x='Curve', y=cv_stats, hue=group_type, palette='Set3')
+    # sns.swarmplot(data=df, x='Curve', y='Peak_60', hue=group_type)
+
+    # sns.violinplot(data=df, x='Curve', y='TBR_10-30', hue=group_type, cut=0, split=True, scale='width')
+    # sns.boxplot(data=df, x='Curve', y=cv_stats, hue=group_type, dodge=True)
+    # sns.stripplot(data=df, color='.3')
+
+    ax.set_xticklabels(xlabels)
+    ax.set_xlabel(cv_chars[0] + '                          ' + cv_chars[1] + '                          ' + cv_chars[2])
+    plt.legend(loc='upper right')
+    sns.despine(left=True, bottom=True)  # remove borders
+    plt.show()
+
+
+folder = 'C:/PycharmProjects/Table_processer/Output/'  # work folder
+lesion_df = pd.read_csv(folder + 'Patient_list.csv', sep='\t', dtype={'Les': str})  # load df with clin data
 
 # possible variables
-histotypes = ['ОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'АнОДГ', 'Мен', 'Мтс', 'DBCLC']
-malignance = ['добр', 'зло']
+histotypes = ['ОДГ', 'АСЦ', 'АнАСЦ', 'ГБ', 'АнОДГ', 'Мен', 'Мтс', 'ДБКЛ']
+malignance = ['добро', 'зло']
 
 rois = ['Max_uptake_sphere', 'Norma', 'Max_uptake_circle']
 uptake_unit_types = ['Mean', 'Maximum', 'TBR_Mean', 'TBR_Maximum']
@@ -245,16 +334,16 @@ stats = ['Average', 'Low_limit', 'High_limit']
 groups = [histotypes, malignance]
 
 # df for multiple histotype curve plot
-iterables = [groups[1][:], stats]  # set required hystotypes
+iterables = [groups[1][:], stats]  # set required group and subgroup types
 multindex = pd.MultiIndex.from_product(iterables, names=['Groups', 'Stats'])
 all_gr_tacs = pd.DataFrame(columns=multindex)  # generate dataframe
 
 
-# plot averaged TAC for particular histology
+# plot averaged TAC for particular group (histology or malignance)
 
 for g in range(2):
-    group = groups[1][g]  # set subgroup of selecteg group
-    for r in range(1, 2):  # set ROI type
+    group = groups[1][g]  # set subgroup of selected group
+    for r in range(2, 3):  # set ROI type
         roi = rois[r]
         for m in range(1):  # set uptake unit type
             measure = uptake_unit_types[m]
@@ -262,10 +351,21 @@ for g in range(2):
             # create df with group-specific TACs
             filtered_tac_df = filtered_tac_gen(folder, lesion_df, 'Malignance', group, roi, measure)
             tac_w_average = curve_average(filtered_tac_df, average)  # add average TAC with limits to df
-            tac_plot(tac_w_average, group + '_' + roi, measure)  # tac plot draw
+            # tac_plot(tac_w_average, group + '_' + roi, measure)  # single-group average tac plot draw
             for stat in stats:
                 all_gr_tacs[(group, stat)] = tac_w_average[stat]
-all_gr_tacs[('', 'Time')] = tac_w_average['Time']
-tac_multiplot(all_gr_tacs, uptake_unit_types[0])
-# patient_list_sort(folder, lesion_df)
-# correlation_heatmap('C:/PycharmProjects/Table_processer/Curve_stats.csv')
+# all_gr_tacs[('', 'Time')] = tac_w_average['Time']
+# tac_multiplot(all_gr_tacs, measure)  # multiple-group average tac plot
+# patient_list_sort(folder, lesion_df, 'save')  # sort lesion dataframe by lesion numbers
+# correlation_heatmap('C:/PycharmProjects/Table_processer/All_stats_sort.csv')
+
+curve_stats = ['Peak', 'Peak_60', 'TTP', 'TTP_late', 'Slope_early', 'Slope_late', 'TBR_10-30']
+if 1 == 2:
+    both_df = clinic_to_curve(folder, 'All_stats.csv', lesion_df, 'hor')  # merge clinical and curve statistics data)
+    violin_plot(both_df, 'Mal', malignance, curve_stats[4:6], uptake_unit_types[0:3], [rois[0]])
+if 1 == 1:
+    both_df = clinic_to_curve(folder, 'All_stats_vertical.csv', lesion_df, 'vert')
+    violin_plot(both_df, 'Mal', malignance, curve_stats[0:2] + curve_stats[6:7], uptake_unit_types[:], rois[0:1])
+
+
+

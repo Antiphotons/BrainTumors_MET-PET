@@ -148,7 +148,7 @@ def boxplot(path):
                                 df_load(path, 'resids')
     param_list = [df.columns[i] for i in range(1, len(df.columns)) if i % 6 in [1, 2, 3]]
 
-    # Plot the orbital period with horizontal boxes
+    # Plot with horizontal boxes
     sns.boxplot(data=df[param_list], orient='h', dodge=False,
                 whis=[2.5, 97.5], width=.6, palette="vlag")
 

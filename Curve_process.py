@@ -147,7 +147,7 @@ all_tac_stats, tac_stats_vert = pd.DataFrame(), pd.DataFrame()  # generate dataf
 
 
 pipelines = ['plot', 'roi_stat', 'vertical_stat', 'all_stat', 'all_stat_resort']
-pipeline_switch = pipelines[2]
+pipeline_switch = pipelines[0]
 
 # Main process of curve statistics generation
 for roi in regions:  # ROI types
@@ -158,7 +158,7 @@ for roi in regions:  # ROI types
             continue
 
         roi_tbl = pd.DataFrame(columns=curve_measures)
-        for i in range(0, 99):  # number of lesions in working directory
+        for i in range(59, 60):  # number of lesions in working directory
             file = "{0:0=3d}".format(i + 1) + '_' + roi  # filename without extension for plots naming
             file_w_ext = file + '.csv'  # filename with extension for a file opening
             if os.path.exists(folder + file_w_ext):  # checking if a ROI file exists

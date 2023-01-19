@@ -8,10 +8,13 @@ import seaborn as sns
 
 
 # function for dataset loading and processing preparing
-def df_load(path, option):
+def df_load(path, option, res_type='reduced'):
     df = pd.read_csv(path, sep='\t')
     params = [df.columns[i].split('_')[0] for i in range(1, df.shape[1], 6)]  # derive parameters names
-    resids = [df.columns[i].split('_')[1] for i in range(1, 7)][0:3]  # derive residuals names and filter first three
+    if res_type == 'standard':  # derive residuals names
+        resids = [df.columns[i].split('_')[1] for i in range(1, 7)][0:3]  # filter first three
+    elif res_type == 'reduced':
+        resids = [df.columns[i].split('_')[1] for i in range(1, 7)][3:6]  # filter second three
     new_df = pd.DataFrame(data=None, index=params, columns=resids)  # empty dataframe for filling
     options = {'df': 0, 'params': 1, 'resids': 2, 'new_df': 3}
     opt = [df, params, resids, new_df]
@@ -118,7 +121,7 @@ def bootstrap(path, moment, iterations, dig, type):
             # multiple hypothesis adjust
             adj_per = round(2.5 / (len(params) * len(resids)), 3)
 
-            # dataframe with means and adjusted for 24 multiple hypotheses percentilles
+            # dataframe with means and adjusted for p*r multiple hypotheses percentilles
             if type == 'txt':
                 bs_df[r][p] = str(round(np.mean(bs_moments), dig)) + '(CI95 ' + \
                           str(round(np.percentile(bs_moments, adj_per), dig)) + '–' +\
@@ -174,12 +177,12 @@ file2 = 'relative_residuals.csv'
 
 # bootstrap estimation of bias and variability
 
-res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
+res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'txt'), \
                                bootstrap(folder + file1, 'loa', 1000, 2, 'num')
-res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
-rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
+#res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
+rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'txt'), \
                                        bootstrap(folder + file2, 'loa', 1000, 1, 'num')
-rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
+#rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
 
 # output block
 
@@ -187,10 +190,10 @@ rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
 # rel_res_mad_df.to_csv('rel_residuals_mad.csv', sep='\t')
 # res_bf_df.to_csv('residuals_bf.csv', sep='\t')
 # rel_res_bf_df.to_csv('rel_residuals_bf.csv', sep='\t')
-# res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')
-# rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')
+res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')
+rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')
 # res_sd_ci95_df.to_csv('residuals_sd.csv', sep='\t')
 # rel_res_sd_ci95_df.to_csv('rel_residuals_sd.csv', sep='\t')
-res_loas_df.to_csv('residuals_LoA.csv', sep='\t')
-rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')
+# res_loas_df.to_csv('residuals_LoA.csv', sep='\t')
+# rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')
 # plot = boxplot(folder + file2) !NOT READY

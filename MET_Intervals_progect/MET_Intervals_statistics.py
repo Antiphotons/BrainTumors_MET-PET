@@ -158,8 +158,8 @@ for prmtr in parameters:
 
 #res_dataframe.to_csv('residuals.csv', sep='\t')  # save absolute residuals to .csv
 #rel_res_dataframe.to_csv('relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv
-abs_res_dataframe.to_csv('abs_residuals.csv', sep='\t')  # save absolute residuals to .csv
-abs_rel_res_dataframe.to_csv('abs_relative_residuals.csv', sep='\t')  # save absolute % residuals to .csv
+#abs_res_dataframe.to_csv('abs_residuals.csv', sep='\t')  # save absolute residuals to .csv
+#abs_rel_res_dataframe.to_csv('abs_relative_residuals.csv', sep='\t')  # save absolute % residuals to .csv
 #median_df.to_csv('medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
 #res_median_df.to_csv('res_medians_and_quartiles.csv', sep='\t')  # save residuals medians & quartiles to .csv
 #rel_res_median_df.to_csv('rel_res_medians_and_quartiles.csv', sep='\t')  # relative residuals medians & quartiles

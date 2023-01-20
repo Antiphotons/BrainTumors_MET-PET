@@ -146,17 +146,17 @@ def loas(mean_df, loa_df, dig):
 # difference plotting
 def boxplot(path):
     sns.set_theme(style="ticks")
-    f, ax = plt.subplots(figsize=(7, 6))  # Initialize the figure with a logarithmic x axis
+    f, ax = plt.subplots(figsize=(10, 6))  # Initialize the figure with a logarithmic x axis
     df, params, resids = df_load(path, 'df'), df_load(path, 'params'), \
                                 df_load(path, 'resids')
     param_list = [df.columns[i] for i in range(1, len(df.columns)) if i % 6 in [1, 2, 3]]
 
     # Plot with horizontal boxes
-    sns.boxplot(data=df[param_list], orient='h', dodge=False,
+    sns.boxplot(data=df[param_list[3:-3]], orient='h', dodge=False,
                 whis=[2.5, 97.5], width=.6, palette="vlag")
 
     # Add in points to show each observation
-    sns.stripplot(data=df[param_list], orient='h',
+    sns.stripplot(data=df[param_list[3:-3]], orient='h',
                   size=4, color=".3", linewidth=0)
 
     # Tweak the visual presentation
@@ -177,12 +177,12 @@ file2 = 'relative_residuals.csv'
 
 # bootstrap estimation of bias and variability
 
-res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'txt'), \
-                               bootstrap(folder + file1, 'loa', 1000, 2, 'num')
-#res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
-rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'txt'), \
-                                       bootstrap(folder + file2, 'loa', 1000, 1, 'num')
-#rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
+# res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
+#                               bootstrap(folder + file1, 'loa', 1000, 2, 'num')
+# res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
+#  rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
+#                                       bootstrap(folder + file2, 'loa', 1000, 1, 'num')
+# rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
 
 # output block
 
@@ -190,10 +190,10 @@ rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1
 # rel_res_mad_df.to_csv('rel_residuals_mad.csv', sep='\t')
 # res_bf_df.to_csv('residuals_bf.csv', sep='\t')
 # rel_res_bf_df.to_csv('rel_residuals_bf.csv', sep='\t')
-res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')
-rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')
+# res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')
+# rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')
 # res_sd_ci95_df.to_csv('residuals_sd.csv', sep='\t')
 # rel_res_sd_ci95_df.to_csv('rel_residuals_sd.csv', sep='\t')
 # res_loas_df.to_csv('residuals_LoA.csv', sep='\t')
 # rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')
-# plot = boxplot(folder + file2) !NOT READY
+plot = boxplot(folder + file2)

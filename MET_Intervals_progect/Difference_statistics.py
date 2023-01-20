@@ -146,21 +146,20 @@ def loas(mean_df, loa_df, dig):
 # difference plotting
 def boxplot(path):
     sns.set_theme(style="ticks")
-    f, ax = plt.subplots(figsize=(10, 6))  # Initialize the figure with a logarithmic x axis
+    f, ax = plt.subplots(figsize=(8, 10))  # Initialize the figure with a logarithmic x axis
     df, params, resids = df_load(path, 'df'), df_load(path, 'params'), \
                                 df_load(path, 'resids')
     param_list = [df.columns[i] for i in range(1, len(df.columns)) if i % 6 in [1, 2, 3]]
 
     # Plot with horizontal boxes
-    sns.boxplot(data=df[param_list[3:-3]], orient='h', dodge=False,
-                whis=[2.5, 97.5], width=.6, palette="vlag")
+    sns.boxplot(data=df[param_list[3:-3]], orient='v', dodge=False, whis=[2.5, 97.5], width=.6, palette="vlag")
 
     # Add in points to show each observation
-    sns.stripplot(data=df[param_list[3:-3]], orient='h',
-                  size=4, color=".3", linewidth=0)
+    sns.stripplot(data=df[param_list[3:-3]], orient='v', size=4, color=".3", linewidth=0)
 
     # Tweak the visual presentation
-    ax.xaxis.grid(True)
+    plt.grid(True)
+    plt.xticks(rotation=90)
     ax.set(ylabel="")
     sns.despine(trim=True, left=True)
     plt.show()

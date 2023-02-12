@@ -115,7 +115,7 @@ def bootstrap(path, moment, iterations, dig, type):
 
             # histograms plotting for all parameters
             plt.hist(bs_moments)
-            #plt.savefig(p + '_' + r + '_' + moment + '_hist.png')
+            plt.savefig(p + '_' + r + '_' + moment + '_hist.png')
             plt.clf()
 
             # multiple hypothesis adjust
@@ -133,8 +133,8 @@ def bootstrap(path, moment, iterations, dig, type):
     return bs_df
 
 
-# function for limits of agreement computation
-def loas(mean_df, loa_df, dig):
+# function for limits of agreement computation and text representation
+def loas(mean_df, loa_df, dig=2):
     loas_df = pd.DataFrame(data=None, index=mean_df.index, columns=mean_df.columns)
     for i in mean_df.index:
         for c in mean_df.columns:
@@ -171,28 +171,27 @@ file2 = 'relative_residuals.csv'
 
 # classical nonparametric estimation of variability
 
-# res_mad_df, res_bf_df = mad(folder + file1, 3), brown_forsythe(folder + file1, 5)
-# rel_res_mad_df, rel_res_bf_df = mad(folder + file2, 1), brown_forsythe(folder + file2, 5)
+res_mad_df, res_bf_df = mad(folder + file1, 3), brown_forsythe(folder + file1, 5)
+rel_res_mad_df, rel_res_bf_df = mad(folder + file2, 1), brown_forsythe(folder + file2, 5)
 
 # bootstrap estimation of bias and variability
 
-# res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
-#                               bootstrap(folder + file1, 'loa', 1000, 2, 'num')
-# res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
-#  rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
-#                                       bootstrap(folder + file2, 'loa', 1000, 1, 'num')
-# rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
+res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
+                               bootstrap(folder + file1, 'loa', 1000, 2, 'num')
+res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
+rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
+                                       bootstrap(folder + file2, 'loa', 1000, 1, 'num')
+rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
 
-# output block
+# Output block: tables and plots of descriptive statistics for differences (or residuals)
+# and relative differences between three 10-min MET-PET intervals
 
-# res_mad_df.to_csv('residuals_mad.csv', sep='\t')
-# rel_res_mad_df.to_csv('rel_residuals_mad.csv', sep='\t')
-# res_bf_df.to_csv('residuals_bf.csv', sep='\t')
-# rel_res_bf_df.to_csv('rel_residuals_bf.csv', sep='\t')
-# res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')
-# rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')
-# res_sd_ci95_df.to_csv('residuals_sd.csv', sep='\t')
-# rel_res_sd_ci95_df.to_csv('rel_residuals_sd.csv', sep='\t')
-# res_loas_df.to_csv('residuals_LoA.csv', sep='\t')
-# rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')
-plot = boxplot(folder + file2)
+res_mad_df.to_csv('residuals_mad.csv', sep='\t')  # Median average deviation (MAD)
+rel_res_mad_df.to_csv('rel_residuals_mad.csv', sep='\t')  # MAD for relative residuals
+res_bf_df.to_csv('residuals_bf.csv', sep='\t')  #  Brown-Forsythe p-values
+rel_res_bf_df.to_csv('rel_residuals_bf.csv', sep='\t')  # B-F p for relative residuals
+res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')  # Mean and CI95 for residuals
+rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')  # Mean and CI95 for relative residuals
+res_loas_df.to_csv('residuals_LoA.csv', sep='\t')  # limits of agreement (LoAs)
+rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')  # LoAs for relative residuals
+plot = boxplot(folder + file2)  # boxplot for all relative residuals

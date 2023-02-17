@@ -47,7 +47,7 @@ def rel_residuals(dataframe, parameter):
     rel_res_st3 = (dataframe[columnst] - dataframe[column3]) / dataframe[columnst] * 100
     rel_res_21 = (dataframe[column2] - dataframe[column1]) / dataframe[column1] * 100
     rel_res_31 = (dataframe[column3] - dataframe[column1]) / dataframe[column1] * 100
-    rel_res_32 = (dataframe[column3] - dataframe[column2]) / dataframe[column1] * 100
+    rel_res_32 = (dataframe[column3] - dataframe[column2]) / dataframe[column2] * 100
     rel_res_df = pd.DataFrame({
         parameter + '_st-1': rel_res_st1,
         parameter + '_st-2': rel_res_st2,
@@ -65,8 +65,7 @@ file = 'Intervals.csv'
 
 # df load & empty rows deletion
 Int_dataframe = pd.read_csv(folder + file, sep='\t', dtype={'Case': 'Int64'})
-Int_dataframe = Int_dataframe[Int_dataframe.Case.notnull()].reset_index()
-del Int_dataframe['index']
+Int_dataframe = Int_dataframe[Int_dataframe.Case.notnull()].reset_index(drop=True)
 
 # creating an empty tables with residuals
 res_dataframe, rel_res_dataframe = pd.DataFrame(), pd.DataFrame()
@@ -101,10 +100,8 @@ res_median_df.index.name = 'Parameter'
 rel_res_median_df = res_median_df.copy(deep=True)  # unfilled table with medians of relative residuals
 
 # filter the benign and malignant lesions
-ben_int_df = Int_dataframe[Int_dataframe.Malignancy == 'Benign'].reset_index()
-del ben_int_df['index']
-mal_int_df = Int_dataframe[Int_dataframe.Malignancy == 'Malignant'].reset_index()
-del mal_int_df['index']
+ben_int_df = Int_dataframe[Int_dataframe.Malignancy == 'Benign'].reset_index(drop=True)
+mal_int_df = Int_dataframe[Int_dataframe.Malignancy == 'Malignant'].reset_index(drop=True)
 ben_rel_res_df, mal_rel_res_df = rel_res_dataframe.copy(deep=True), rel_res_dataframe.copy(deep=True)  # empty df
 ben_median_df, mal_median_df = median_df.copy(deep=True), median_df.copy(deep=True)  # unfilled dataframes of medians
 
@@ -134,7 +131,7 @@ for prmtr in parameters:
         mal_med_quart = column_median(mal_int_df, p)
         mal_median_df[intrv].loc[prmtr] = mal_med_quart
 
-    for rel_res in ['2-1', '3-2']:
+    for rel_res in ['2-1', '3-2', '3-1']:
         rr = prmtr + '_' + rel_res
         rel_res_med_quart = column_median(rel_res_dataframe, rr)  # calculate medians and quartiles of % residuals
         median_df[rel_res].loc[prmtr] = rel_res_med_quart  # fill out the median tables
@@ -165,3 +162,5 @@ for prmtr in parameters:
 #rel_res_median_df.to_csv('rel_res_medians_and_quartiles.csv', sep='\t')  # relative residuals medians & quartiles
 #ben_median_df.to_csv('ben_medians_and_quartiles.csv', sep='\t')  # save benign medians & quartiles to .csv
 #mal_median_df.to_csv('mal_medians_and_quartiles.csv', sep='\t')  # save malignant medians & quartiles to .csv
+all_dataframe = pd.concat([Int_dataframe, rel_res_dataframe, rel_res_dataframe], axis=1)
+print(all_dataframe)

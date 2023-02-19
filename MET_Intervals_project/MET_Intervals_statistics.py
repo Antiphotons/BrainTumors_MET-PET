@@ -2,7 +2,8 @@ import os.path
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from Difference_statistics import brown_forsythe
+from scipy.stats import spearmanr, pearsonr
+# from Difference_statistics import brown_forsythe
 
 
 # Function for computation of medians and quartiles of indexes
@@ -19,16 +20,16 @@ def residuals(dataframe, parameter):
     column1 = parameter + '-1'
     column2 = parameter + '-2'
     column3 = parameter + '-3'
-    res_st1 = dataframe[columnst] - dataframe[column1]
-    res_st2 = dataframe[columnst] - dataframe[column2]
-    res_st3 = dataframe[columnst] - dataframe[column3]
+    res_st1 = dataframe[column1] - dataframe[columnst]
+    res_st2 = dataframe[column2] - dataframe[columnst]
+    res_st3 = dataframe[column3] - dataframe[columnst]
     res_21 = dataframe[column2] - dataframe[column1]
     res_31 = dataframe[column3] - dataframe[column1]
     res_32 = dataframe[column3] - dataframe[column2]
     res_df = pd.DataFrame({
-        parameter + '_st-1': res_st1,
-        parameter + '_st-2': res_st2,
-        parameter + '_st-3': res_st3,
+        parameter + '_1-st': res_st1,
+        parameter + '_2-st': res_st2,
+        parameter + '_3-st': res_st3,
         parameter + '_2-1': res_21,
         parameter + '_3-1': res_31,
         parameter + '_3-2': res_32
@@ -42,16 +43,16 @@ def rel_residuals(dataframe, parameter):
     column1 = parameter + '-1'
     column2 = parameter + '-2'
     column3 = parameter + '-3'
-    rel_res_st1 = (dataframe[columnst] - dataframe[column1]) / dataframe[columnst] * 100
-    rel_res_st2 = (dataframe[columnst] - dataframe[column2]) / dataframe[columnst] * 100
-    rel_res_st3 = (dataframe[columnst] - dataframe[column3]) / dataframe[columnst] * 100
+    rel_res_st1 = (dataframe[column1] - dataframe[columnst]) / dataframe[columnst] * 100
+    rel_res_st2 = (dataframe[column2] - dataframe[columnst]) / dataframe[columnst] * 100
+    rel_res_st3 = (dataframe[column3] - dataframe[columnst]) / dataframe[columnst] * 100
     rel_res_21 = (dataframe[column2] - dataframe[column1]) / dataframe[column1] * 100
     rel_res_31 = (dataframe[column3] - dataframe[column1]) / dataframe[column1] * 100
     rel_res_32 = (dataframe[column3] - dataframe[column2]) / dataframe[column2] * 100
     rel_res_df = pd.DataFrame({
-        parameter + '_st-1': rel_res_st1,
-        parameter + '_st-2': rel_res_st2,
-        parameter + '_st-3': rel_res_st3,
+        parameter + '_1-st': rel_res_st1,
+        parameter + '_2-st': rel_res_st2,
+        parameter + '_3-st': rel_res_st3,
         parameter + '_2-1': rel_res_21,
         parameter + '_3-1': rel_res_31,
         parameter + '_3-2': rel_res_32
@@ -73,6 +74,7 @@ res_dataframe, rel_res_dataframe = pd.DataFrame(), pd.DataFrame()
 # creating an empty table with medians
 parameters = ['SUVnorm', 'SUV1.3', 'SUV10', 'SUVmax', 'TBR1.3', 'TBR10', 'TBRmax', 'TMV1.3']
 intervals = ['st', '1', '2', '3']
+resids = ['1-st', '2-st', '3-st', '2-1', '3-2', '3-1']
 median_df = pd.DataFrame(
     {
         'st': ['', '', '', '', '', '', '', ''],
@@ -80,7 +82,8 @@ median_df = pd.DataFrame(
         '2': ['', '', '', '', '', '', '', ''],
         '3': ['', '', '', '', '', '', '', ''],
         '2-1': ['', '', '', '', '', '', '', ''],
-        '3-2': ['', '', '', '', '', '', '', '']
+        '3-2': ['', '', '', '', '', '', '', ''],
+        '3-1': ['', '', '', '', '', '', '', '']
     },
     index=parameters,
 )
@@ -89,9 +92,9 @@ median_df.index.name = 'Parameter'
 # creating an unfilled table with medians of residuals
 res_median_df = pd.DataFrame(
     {
-        'st-1': ['', '', '', '', '', '', '', ''],
-        'st-2': ['', '', '', '', '', '', '', ''],
-        'st-3': ['', '', '', '', '', '', '', '']
+        '1-st': ['', '', '', '', '', '', '', ''],
+        '2-st': ['', '', '', '', '', '', '', ''],
+        '3-st': ['', '', '', '', '', '', '', '']
     },
     index=parameters,
 )
@@ -143,7 +146,7 @@ for prmtr in parameters:
         mal_median_df[rel_res].loc[prmtr] = mal_rel_res_med_quart
 
     # calculate medians & quartiles of differences between 20 and 10 min intervals
-    for res in ['st-1', 'st-2', 'st-3']:
+    for res in ['1-st', '2-st', '3-st']:
         r = prmtr + '_' + res
         res_med_quart = column_median(res_dataframe, r)  # calculate medians and quartiles of residuals
         res_median_df[res].loc[prmtr] = res_med_quart  # fill out the res median tables
@@ -153,14 +156,129 @@ for prmtr in parameters:
         rel_res_median_df[res].loc[prmtr] = rel_res_med_quart2
 
 
-#res_dataframe.to_csv('residuals.csv', sep='\t')  # save absolute residuals to .csv
-#rel_res_dataframe.to_csv('relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv
-#abs_res_dataframe.to_csv('abs_residuals.csv', sep='\t')  # save absolute residuals to .csv
-#abs_rel_res_dataframe.to_csv('abs_relative_residuals.csv', sep='\t')  # save absolute % residuals to .csv
-#median_df.to_csv('medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
-#res_median_df.to_csv('res_medians_and_quartiles.csv', sep='\t')  # save residuals medians & quartiles to .csv
-#rel_res_median_df.to_csv('rel_res_medians_and_quartiles.csv', sep='\t')  # relative residuals medians & quartiles
-#ben_median_df.to_csv('ben_medians_and_quartiles.csv', sep='\t')  # save benign medians & quartiles to .csv
-#mal_median_df.to_csv('mal_medians_and_quartiles.csv', sep='\t')  # save malignant medians & quartiles to .csv
-all_dataframe = pd.concat([Int_dataframe, rel_res_dataframe, rel_res_dataframe], axis=1)
-print(all_dataframe)
+# res_dataframe.to_csv('residuals.csv', sep='\t')  # save absolute residuals to .csv
+# rel_res_dataframe.to_csv('relative_residuals.csv', sep='\t')  # save relative (%) residuals to .csv
+# abs_res_dataframe.to_csv('abs_residuals.csv', sep='\t')  # save absolute residuals to .csv
+# abs_rel_res_dataframe.to_csv('abs_relative_residuals.csv', sep='\t')  # save absolute % residuals to .csv
+
+# median_df.to_csv('medians_and_quartiles.csv', sep='\t')  # save parameter medians & quartiles to .csv
+# res_median_df.to_csv('res_medians_and_quartiles.csv', sep='\t')  # save residuals medians & quartiles to .csv
+# rel_res_median_df.to_csv('rel_res_medians_and_quartiles.csv', sep='\t')  # relative residuals medians & quartiles
+# ben_median_df.to_csv('ben_medians_and_quartiles.csv', sep='\t')  # save benign medians & quartiles to .csv
+# mal_median_df.to_csv('mal_medians_and_quartiles.csv', sep='\t')  # save malignant medians & quartiles to .csv
+
+
+# correlations between uptake values and differences of these values on distinct intervals
+
+val_res_df = pd.concat([Int_dataframe, res_dataframe], axis=1)  # join df for residuals
+val_rel_res_df = pd.concat([Int_dataframe, rel_res_dataframe], axis=1)  # join df for % residuals
+abs_res_df, abs_rel_res_df = abs(res_dataframe), abs(rel_res_dataframe)  # absolute residuals and % residuals df
+val_abs_res_df = pd.concat([Int_dataframe, abs_res_df], axis=1)  # join df for abs residuals
+val_abs_rel_res_df = pd.concat([Int_dataframe, abs_rel_res_df], axis=1)  # join df for abs % residuals
+
+corr_df = pd.DataFrame(columns=resids, index=[p + '-' + i for p in parameters for i in intervals])
+spearman, rel_spearman, abs_spearman, abs_rel_spearman = corr_df.copy(), corr_df.copy(), corr_df.copy(), corr_df.copy()
+pearson, rel_pearson, abs_pearson, abs_rel_pearson = corr_df.copy(), corr_df.copy(), corr_df.copy(), corr_df.copy()
+
+for p in parameters:
+    for i in intervals:
+        if i == 'st':
+            for r in resids[:3]:
+
+                # non-parametric correlations between residuals (abs, % and abs % residuals) and initial values
+
+                spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
+                rel_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
+                abs_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
+                abs_rel_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
+
+                # parametric correlations (linear pearson)
+
+                pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
+                rel_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
+                abs_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
+                abs_rel_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
+
+        elif i == '1':
+            for r in ['2-1', '3-1']:
+                spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
+                rel_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
+                abs_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
+                abs_rel_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
+
+                # parametric correlations (linear pearson)
+
+                pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
+                rel_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
+                abs_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
+                abs_rel_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
+
+        elif i == '2':
+            for r in ['3-2']:
+                spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
+                rel_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
+                abs_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
+                abs_rel_spearman.loc[p + '-' + i, r] = \
+                    (round(spearmanr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(spearmanr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
+
+                # parametric correlations (linear pearson)
+
+                pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
+                rel_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
+                abs_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
+                abs_rel_pearson.loc[p + '-' + i, r] = \
+                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                     round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
+
+spearman.to_csv('spearman_res.csv', sep='\t')
+rel_spearman.to_csv('spearman_rel_res.csv', sep='\t')
+abs_spearman.to_csv('spearman_abs_res.csv', sep='\t')
+abs_rel_spearman.to_csv('spearman_abs_rel_res.csv', sep='\t')
+
+# val_res_dataframe.to_csv('intervals-residuals.csv', sep='\t')
+# val_rel_res_dataframe.to_csv('intervals-rel_residuals.csv', sep='\t')

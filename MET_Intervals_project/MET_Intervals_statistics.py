@@ -203,16 +203,16 @@ for p in parameters:
                 # parametric correlations (linear pearson)
 
                 pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
                 rel_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
                 abs_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
                 abs_rel_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
 
         elif i == '1':
@@ -233,16 +233,16 @@ for p in parameters:
                 # parametric correlations (linear pearson)
 
                 pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
                 rel_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
                 abs_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
                 abs_rel_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
 
         elif i == '2':
@@ -263,22 +263,31 @@ for p in parameters:
                 # parametric correlations (linear pearson)
 
                 pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_res_df[p + '-' + i], val_res_df[p + '_' + r]).pvalue, 2))
                 rel_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_rel_res_df[p + '-' + i], val_rel_res_df[p + '_' + r]).pvalue, 2))
                 abs_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_abs_res_df[p + '-' + i], val_abs_res_df[p + '_' + r]).pvalue, 2))
                 abs_rel_pearson.loc[p + '-' + i, r] = \
-                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).correlation, 2),
+                    (round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).statistic, 2),
                      round(pearsonr(val_abs_rel_res_df[p + '-' + i], val_abs_rel_res_df[p + '_' + r]).pvalue, 2))
 
-spearman.to_csv('spearman_res.csv', sep='\t')
-rel_spearman.to_csv('spearman_rel_res.csv', sep='\t')
-abs_spearman.to_csv('spearman_abs_res.csv', sep='\t')
-abs_rel_spearman.to_csv('spearman_abs_rel_res.csv', sep='\t')
+# spearman.to_csv('spearman_res.csv', sep='\t')
+# rel_spearman.to_csv('spearman_rel_res.csv', sep='\t')
+# abs_spearman.to_csv('spearman_abs_res.csv', sep='\t')
+# abs_rel_spearman.to_csv('spearman_abs_rel_res.csv', sep='\t')
+
+abs_spearman_st, abs_rel_spearman_st = abs_spearman.iloc[::4, :3], abs_rel_spearman.iloc[::4, :3]
+spearman_st = pd.concat([abs_spearman_st, abs_rel_spearman_st], axis=0)
+spearman_st.to_csv('spearman_st.csv', sep='\t')
+
+# pearson.to_csv('pearson_res.csv', sep='\t')
+# rel_pearson.to_csv('pearson_rel_res.csv', sep='\t')
+# abs_pearson.to_csv('pearson_abs_res.csv', sep='\t')
+# abs_rel_pearson.to_csv('pearson_abs_rel_res.csv', sep='\t')
 
 # val_res_dataframe.to_csv('intervals-residuals.csv', sep='\t')
 # val_rel_res_dataframe.to_csv('intervals-rel_residuals.csv', sep='\t')

@@ -123,7 +123,7 @@ def bootstrap(path, moment, iterations, dig, type):
 
             # dataframe with means and adjusted for p*r multiple hypotheses percentilles
             if type == 'txt':
-                bs_df[r][p] = str(round(np.mean(bs_moments), dig)) + '(CI95 ' + \
+                bs_df[r][p] = str(round(np.mean(bs_moments), dig)) + '(' + \
                           str(round(np.percentile(bs_moments, adj_per), dig)) + '–' +\
                           str(round(np.percentile(bs_moments, 100 - adj_per), dig)) + ')'
             elif type == 'num':
@@ -146,20 +146,23 @@ def loas(mean_df, loa_df, dig=2):
 # difference plotting
 def boxplot(path):
     sns.set_theme(style="ticks")
-    f, ax = plt.subplots(figsize=(8, 10))  # Initialize the figure with a logarithmic x axis
+    f, ax = plt.subplots(figsize=(8, 10))  # Initialize the figure
+
+    # load dataframe
     df, params, resids = df_load(path, 'df'), df_load(path, 'params'), \
                                 df_load(path, 'resids')
-    param_list = [df.columns[i] for i in range(1, len(df.columns)) if i % 6 in [1, 2, 3]]
+    param_list = [df.columns[i] for i in range(1, len(df.columns)) if i % 6 in [4, 5, 0]]
 
     # Plot with horizontal boxes
-    sns.boxplot(data=df[param_list[3:-3]], orient='v', dodge=False, whis=[2.5, 97.5], width=.6, palette="vlag")
+    sns.boxplot(data=df[param_list[:-3]], orient='h', dodge=False, whis=[2.5, 97.5], width=.6, palette="vlag")
 
     # Add in points to show each observation
-    sns.stripplot(data=df[param_list[3:-3]], orient='v', size=4, color=".3", linewidth=0)
+    sns.stripplot(data=df[param_list[:-3]], orient='h', size=3, color=".3", linewidth=0)
 
     # Tweak the visual presentation
     plt.grid(True)
-    plt.xticks(rotation=90)
+    # plt.xticks(range(-20, 50, 10), rotation=0)  # variant for relative SUVs and TBRs
+    # plt.xticks(range(-100, 200, 50), rotation=0)  # variant for relative MTV
     ax.set(ylabel="")
     sns.despine(trim=True, left=True)
     plt.show()
@@ -171,27 +174,27 @@ file2 = 'relative_residuals.csv'
 
 # classical nonparametric estimation of variability
 
-res_mad_df, res_bf_df = mad(folder + file1, 3), brown_forsythe(folder + file1, 5)
-rel_res_mad_df, rel_res_bf_df = mad(folder + file2, 1), brown_forsythe(folder + file2, 5)
+# res_mad_df, res_bf_df = mad(folder + file1, 3), brown_forsythe(folder + file1, 5)
+# rel_res_mad_df, rel_res_bf_df = mad(folder + file2, 1), brown_forsythe(folder + file2, 5)
 
 # bootstrap estimation of bias and variability
 
-res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
-                               bootstrap(folder + file1, 'loa', 1000, 2, 'num')
-res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
-rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
-                                       bootstrap(folder + file2, 'loa', 1000, 1, 'num')
-rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
+# res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
+#                               bootstrap(folder + file1, 'loa', 1000, 2, 'num')
+# res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
+# rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
+#                                       bootstrap(folder + file2, 'loa', 1000, 1, 'num')
+# rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
 
 # Output block: tables and plots of descriptive statistics for differences (or residuals)
 # and relative differences between three 10-min MET-PET intervals
 
-res_mad_df.to_csv('residuals_mad.csv', sep='\t')  # Median average deviation (MAD)
-rel_res_mad_df.to_csv('rel_residuals_mad.csv', sep='\t')  # MAD for relative residuals
-res_bf_df.to_csv('residuals_bf.csv', sep='\t')  #  Brown-Forsythe p-values
-rel_res_bf_df.to_csv('rel_residuals_bf.csv', sep='\t')  # B-F p for relative residuals
-res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')  # Mean and CI95 for residuals
-rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')  # Mean and CI95 for relative residuals
-res_loas_df.to_csv('residuals_LoA.csv', sep='\t')  # limits of agreement (LoAs)
-rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')  # LoAs for relative residuals
-plot = boxplot(folder + file2)  # boxplot for all relative residuals
+# res_mad_df.to_csv('residuals_mad.csv', sep='\t')  # Median average deviation (MAD)
+# rel_res_mad_df.to_csv('rel_residuals_mad.csv', sep='\t')  # MAD for relative residuals
+# res_bf_df.to_csv('residuals_bf.csv', sep='\t')  #  Brown-Forsythe p-values
+# rel_res_bf_df.to_csv('rel_residuals_bf.csv', sep='\t')  # B-F p for relative residuals
+# res_ci95_df.to_csv('residuals_ci95.csv', sep='\t')  # Mean and CI95 for residuals
+# rel_res_ci95_df.to_csv('rel_residuals_ci95.csv', sep='\t')  # Mean and CI95 for relative residuals
+# res_loas_df.to_csv('residuals_LoA.csv', sep='\t')  # limits of agreement (LoAs)
+# rel_res_loas_df.to_csv('rel_residuals_LoA.csv', sep='\t')  # LoAs for relative residuals
+# plot = boxplot(folder + file1)  # boxplot for all relative residuals

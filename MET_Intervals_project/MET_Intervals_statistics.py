@@ -282,7 +282,7 @@ for p in parameters:
 
 abs_spearman_st, abs_rel_spearman_st = abs_spearman.iloc[::4, :3], abs_rel_spearman.iloc[::4, :3]
 spearman_st = pd.concat([abs_spearman_st, abs_rel_spearman_st], axis=0)
-spearman_st.to_csv('spearman_st.csv', sep='\t')
+# spearman_st.to_csv('spearman_st.csv', sep='\t')
 
 # pearson.to_csv('pearson_res.csv', sep='\t')
 # rel_pearson.to_csv('pearson_rel_res.csv', sep='\t')

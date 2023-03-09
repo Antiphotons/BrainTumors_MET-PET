@@ -96,8 +96,6 @@ def bootstrap(path, moment, iterations, dig, type):
     df, params, resids, bs_df = df_load(path, 'df'), df_load(path, 'params'), \
                                  df_load(path, 'resids'), df_load(path, 'new_df')
 
-    df = df[df['TMV1.3_3-st'] <= 100]
-
     # dataframe filling
     for p in params:
         for r in resids:
@@ -184,7 +182,7 @@ rel_res_mad_df, rel_res_bf_df = mad(folder + file2, 1), brown_forsythe(folder + 
 res_ci95_df, res_loa_ci95_df = bootstrap(folder + file1, 'mean', 1000, 2, 'num'), \
                                bootstrap(folder + file1, 'loa', 1000, 2, 'num')
 res_loas_df = loas(res_ci95_df, res_loa_ci95_df, 2)
-rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'txt'), \
+rel_res_ci95_df, rel_res_loa_ci95_df = bootstrap(folder + file2, 'mean', 1000, 1, 'num'), \
                                        bootstrap(folder + file2, 'loa', 1000, 1, 'num')
 rel_res_loas_df = loas(rel_res_ci95_df, rel_res_loa_ci95_df, 1)
 
